@@ -1,1 +1,93 @@
-@import url('https://fonts.googleapis.com/css?family=DM+Sans|Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Courgette|DM+Sans&display=swap');
+
+:root {
+    --naranjaClaro: #ffd3ad;
+    --naranja: #ee811d;
+    --azulClaro: #dfeaff;
+    --azul: #0bb0c8;
+    --azulOscuro: #058dac;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/* PLANTILLA CSS */
+
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
+header {
+    background-color: var(--azulClaro);
+    display: flex;
+}
+
+    header>hgroup {
+        padding: 70px 40px 50px 60px;
+    }
+
+        header>hgroup>h1 {
+            text-align: center;
+        }
+
+            header>hgroup>h1>a>img {
+                background-color: #fff;
+                padding: 15px;
+                border-radius: 5%;
+            }
+
+        header>hgroup>h2 {
+            font-family: 'Courgette', sans-serif;
+            font-size: 1.7em;
+            color: var(--azulOscuro);
+            padding-top: 20px;
+            text-shadow: 2px 2px 2px #015264;
+        }
+
+    header>nav {
+        padding-top: 140px;
+        width: 90%;
+    }
+
+        header>nav>ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /*Permite a los elementos cambiar de línea en un espacio limitado*/
+        }
+
+            header>nav>ul>li {
+                margin: 40px 20px;
+            }
+
+                header>nav>ul>li>a {
+                    padding: 20px;
+                    text-decoration: none;
+                    background-color: #fff;
+                    border-radius: 3%;
+                    color: var(--azulOscuro);
+                    border: solid 3px var(--azulOscuro);
+                    box-shadow: 4px 4px 4px #015264;
+                }
+
+                header>nav>ul>li>a:hover {
+                    background-color: var(--azulOscuro);
+                    border-radius: 3%;
+                    color: #fff;
+                    border: solid 3px var(--azulOscuro);
+                    box-shadow: 4px 4px 4px #015264;
+                    transition: .3s;
+                }
+
+                header>nav>ul>li>a:active {
+                    box-shadow: none;
+                    transition: 0s;
+                    position: relative;
+                    top: 4px;
+                    left: 4px;
+                }
