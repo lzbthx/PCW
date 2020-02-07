@@ -2,10 +2,10 @@
 
 :root {
     --naranjaClaro: #ffd3ad;
-    --naranja: #ee811d;
+    --naranjaOscuro: #d16909;
     --azulClaro: #dfeaff;
-    --azul: #0bb0c8;
     --azulOscuro: #058dac;
+    --negroLetra: #222;
 }
 
 * {
@@ -73,6 +73,7 @@ header {
                     color: var(--azulOscuro);
                     border: solid 3px var(--azulOscuro);
                     box-shadow: 4px 4px 4px #015264;
+                    font-weight: bold;
                 }
 
                 header>nav>ul>li>a:hover {
@@ -91,3 +92,45 @@ header {
                     top: 4px;
                     left: 4px;
                 }
+
+main>section>h3 {
+    text-align: center;
+    padding: 20px;
+    font-size: 2em;
+    color: var(--azulOscuro);
+    font-family: 'Courgette', sans-serif;
+}
+
+main>section>section {
+    background-color: var(--azulClaro);
+    margin: 0 70px 70px 70px;
+}
+
+    main>section>section>h2 {
+        color: var(--negroLetra);
+        padding: 30px;
+    }
+
+footer {
+    background-color: var(--naranjaClaro);
+    display: flex;
+    padding: 30px;
+    justify-content: space-between;
+}
+
+    footer>p {
+        font-size: 1.2em;
+        margin: 0 10px 0 10px;
+        font-weight: bold;
+        color: var(--naranjaOscuro);
+    }
+
+        footer>p>a,
+        footer>p>a>span {
+            font-weight: bold;
+            color: var(--naranjaOscuro);
+        }
+
+        footer>p>a:hover {
+            text-decoration: none;
+        }
