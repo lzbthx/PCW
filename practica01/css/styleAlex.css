@@ -18,6 +18,10 @@
 
 /* PLANTILLA CSS */
 
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
 header {
     background-color: var(--azulClaro);
     display: flex;
@@ -45,8 +49,45 @@ header {
             text-shadow: 2px 2px 2px #015264;
         }
 
-    header>nav>ul {
-      /*  text-align: center;
-        text-decoration: none;
-        display: flex;*/
+    header>nav {
+        padding-top: 140px;
+        width: 90%;
     }
+
+        header>nav>ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /*Permite a los elementos cambiar de línea en un espacio limitado*/
+        }
+
+            header>nav>ul>li {
+                margin: 40px 20px;
+            }
+
+                header>nav>ul>li>a {
+                    padding: 20px;
+                    text-decoration: none;
+                    background-color: #fff;
+                    border-radius: 3%;
+                    color: var(--azulOscuro);
+                    border: solid 3px var(--azulOscuro);
+                    box-shadow: 4px 4px 4px #015264;
+                }
+
+                header>nav>ul>li>a:hover {
+                    background-color: var(--azulOscuro);
+                    border-radius: 3%;
+                    color: #fff;
+                    border: solid 3px var(--azulOscuro);
+                    box-shadow: 4px 4px 4px #015264;
+                    transition: .3s;
+                }
+
+                header>nav>ul>li>a:active {
+                    box-shadow: none;
+                    transition: 0s;
+                    position: relative;
+                    top: 4px;
+                    left: 4px;
+                }
