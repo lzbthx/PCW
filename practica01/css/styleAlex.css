@@ -104,11 +104,13 @@ main>section>h3 {
 main>section>section {
     background-color: var(--azulClaro);
     margin: 0 30px 50px 30px;
+    padding: 30px 10px 50px 10px;
 }
 
     main>section>section>h4 {
         color: var(--negroLetra);
         padding: 30px;
+        font-size: 1.5em;
     }
 
 footer {
@@ -140,57 +142,46 @@ footer {
 
 /*CSS para index.html y buscar.html*/
 
-#busqueda,
-#articulos {
-    padding: 30px 10px 50px 10px;
+#busqueda>form {
+    margin-top: 15px;
+    margin-left: 30px;
 }
 
-    #busqueda>h4,
-    #articulos>h4 {
-        font-size: 1.5em;
-        padding: 20px;
+    #busqueda>form>label {
+        color: var(--azulOscuro);
+        font-weight: bold;
     }
 
-        #busqueda>form {
-            margin-top: 15px;
-            margin-left: 30px;
-        }
-
-            #busqueda>form>label {
-                color: var(--azulOscuro);
-                font-weight: bold;
-            }
-
-            #busqueda>form>input {
-                width: 100%;
-                height: 40px;
-                padding: 10px;
-                font-size: 1.2em;
-                background-color: transparent;
-                border: none;
-                border-bottom: solid 2px var(--azulOscuro);
-                border-radius: 4px;
-            }
-
-            #busqueda>form>input:hover {
-                border-bottom: solid 2px #015264;
-            }
-
-            #busqueda>form>input:focus {
-                border: none;
-            }
-
-    #articulos>section {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+    #busqueda>form>input {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        font-size: 1.2em;
+        background-color: transparent;
+        border: none;
+        border-bottom: solid 2px var(--azulOscuro);
+        border-radius: 4px;
     }
 
-    #articulos>section>article {
-        width: 400px;
-        margin: 10px;
+    #busqueda>form>input:hover {
+        border-bottom: solid 2px #015264;
     }
 
-        #articulos>section>article>p:first-child {
-            text-align: center;
-        }
+    #busqueda>form>input:focus {
+        border: none;
+    }
+
+#articulos>section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#articulos>section>article {
+    width: 400px;
+    margin: 10px;
+}
+
+    #articulos>section>article>p:first-child {
+        text-align: center;
+    }
