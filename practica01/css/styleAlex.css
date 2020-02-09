@@ -5,7 +5,6 @@
     --naranjaOscuro: #d16909;
     --azulClaro: #dfeaff;
     --azulOscuro: #058dac;
-    --negroLetra: #222;
 }
 
 * {
@@ -108,7 +107,7 @@ main>section>section {
 }
 
     main>section>section>h4 {
-        color: var(--negroLetra);
+        color: #000;
         padding: 30px;
         font-size: 1.5em;
     }
@@ -143,8 +142,7 @@ footer {
 /*CSS para index.html y buscar.html*/
 
 #busqueda>form {
-    margin-top: 15px;
-    margin-left: 30px;
+    margin: 15px 30px 0 30px;
 }
 
     #busqueda>form>label {
@@ -174,14 +172,66 @@ footer {
 #articulos>section {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-#articulos>section>article {
-    width: 400px;
-    margin: 10px;
-}
-
-    #articulos>section>article>p:first-child {
-        text-align: center;
+    #articulos>section>article {
+        width: 400px;
+        margin: 10px;
+        padding: 10px;
+        position: relative;
+        background-color: #fff;
+        border: 2px solid var(--azulOscuro);
     }
+
+        #articulos>section>article>p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #articulos>section>article>p:first-child {
+            text-align: center;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+            #articulos>section>article>p>a>img:hover {
+                transform: scale(1.8);
+                transition: .5s;
+            }
+
+        #articulos>section>article>p:nth-child(3) {
+            position: absolute;
+            top: 60px;
+            right: 25px;
+            color: #8d8d8d;
+        }
+
+        #articulos>section>article>div:nth-child(4) {
+            border-bottom: 2px solid var(--azulOscuro);
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+            #articulos>section>article>div>p {
+                display: inline-block;
+                margin-left: 7px;
+                font-weight: bold;
+            }
+
+            #articulos>section>article>div>p:nth-child(1) {
+                color: #b3b300;
+            }
+
+            #articulos>section>article>div>p:nth-child(2) {
+                color: #b30000;
+            }
+
+            #articulos>section>article>div>p:nth-child(3) {
+                color: #00b300;
+            }
+
+        #articulos>section>article>div:nth-child(5) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
