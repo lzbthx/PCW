@@ -5,7 +5,7 @@
     --naranjaOscuro: #d16909;
     --azulClaro: #dfeaff;
     --azulOscuro: #058dac;
-    --negroLetra: #222;
+    --azulHover: #015264;
 }
 
 * {
@@ -46,7 +46,7 @@ header {
             font-size: 1.7em;
             color: var(--azulOscuro);
             padding-top: 20px;
-            text-shadow: 2px 2px 2px #015264;
+            text-shadow: 2px 2px 2px var(--azulHover);
         }
 
     header>nav {
@@ -72,7 +72,7 @@ header {
                     border-radius: 3%;
                     color: var(--azulOscuro);
                     border: solid 3px var(--azulOscuro);
-                    box-shadow: 4px 4px 4px #015264;
+                    box-shadow: 4px 4px 4px var(--azulHover);
                     font-weight: bold;
                 }
 
@@ -81,7 +81,7 @@ header {
                     border-radius: 3%;
                     color: #fff;
                     border: solid 3px var(--azulOscuro);
-                    box-shadow: 4px 4px 4px #015264;
+                    box-shadow: 4px 4px 4px var(--azulHover);
                     transition: .3s;
                 }
 
@@ -108,7 +108,7 @@ main>section>section {
 }
 
     main>section>section>h4 {
-        color: var(--negroLetra);
+        color: #000;
         padding: 30px;
         font-size: 1.5em;
     }
@@ -140,20 +140,22 @@ footer {
 
 
 
-/*CSS para index.html y buscar.html*/
+/*CSS para index.html*/
 
-#busqueda>form {
-    margin-top: 15px;
-    margin-left: 30px;
+.formResultado {
+    margin: 15px 30px 0 30px;
 }
 
-    #busqueda>form>label {
+    .formResultado>p>label {
         color: var(--azulOscuro);
         font-weight: bold;
     }
 
-    #busqueda>form>input {
+    #busqueda>form>p>input {
         width: 100%;
+    }
+
+    .formResultado>p>input {
         height: 40px;
         padding: 10px;
         font-size: 1.2em;
@@ -163,25 +165,128 @@ footer {
         border-radius: 4px;
     }
 
-    #busqueda>form>input:hover {
-        border-bottom: solid 2px #015264;
+    .formResultado>p>input:hover {
+        border-bottom: solid 2px var(--azulHover);
     }
 
-    #busqueda>form>input:focus {
-        border: none;
+    .formResultado>p>input:focus {
+        border: solid 2px var(--azulOscuro);;
     }
 
-#articulos>section {
+#articulos>div:nth-child(2) {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-#articulos>section>article {
-    width: 400px;
-    margin: 10px;
-}
-
-    #articulos>section>article>p:first-child {
-        text-align: center;
+    #articulos>div:nth-child(2)>article {
+        width: 400px;
+        margin: 10px;
+        padding: 10px;
+        position: relative;
+        background-color: #fff;
+        border: 2px solid var(--azulOscuro);
     }
+
+    #articulos>div:nth-child(2)>article:hover {
+        box-shadow: 0 0 8px var(--azulHover);
+        transition: 6ms;
+    }
+
+        #articulos>div:nth-child(2)>article>p {
+            overflow: hidden;
+        }
+
+        #articulos>div:nth-child(2)>article>h5 {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+            #articulos>div:nth-child(2)>article>h5>a {
+                text-decoration: none;
+                color: var(--azulOscuro);
+            }
+
+            #articulos>div:nth-child(2)>article>h5>a:hover {
+                color: var(--azulHover);
+            }
+
+            #articulos>div:nth-child(2)>article>p>a>img:hover {
+                transform: scale(1.8);
+                transition: .5s;
+            }
+
+        #articulos>div:nth-child(2)>article>p:nth-child(3) {
+            position: absolute;
+            top: 60px;
+            right: 25px;
+            color: #8d8d8d;
+        }
+
+        #articulos>div:nth-child(2)>article>div:nth-child(4) {
+            border-bottom: 2px solid var(--azulOscuro);
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+            #articulos>div:nth-child(2)>article>div>p {
+                display: inline-block;
+                margin-left: 7px;
+                font-weight: bold;
+            }
+
+            #articulos>div:nth-child(2)>article>div>p:nth-child(1) {
+                color: #b3b300;
+            }
+
+            #articulos>div:nth-child(2)>article>div>p:nth-child(2) {
+                color: #b30000;
+            }
+
+            #articulos>div:nth-child(2)>article>div>p:nth-child(3) {
+                color: #00b300;
+            }
+
+        #articulos>div:nth-child(2)>article>p:last-child {
+            height: 20px;
+            /*Determina como son manejados los espacios en blanco*/
+            white-space: nowrap; /*No cambia de línea*/
+            text-overflow: ellipsis;
+        }
+
+#articulos>div:nth-child(3) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+    #articulos>div:nth-child(3)>p {
+        font-size: 1.5em;
+        white-space: pre; /*Mantenemos los espacios en blanco*/
+    }
+
+
+
+
+/*CSS para buscar.html*/
+
+#busquedaGold>form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    #busquedaGold>form>p {
+        width: 50%;
+        padding: 10px;
+    }
+
+        #busquedaGold>form>p:not(#precio)>input {
+            width: 100%;
+        }
+
+        #precio>input {
+            width: 120px;
+            font-size: 1em;
+        }
