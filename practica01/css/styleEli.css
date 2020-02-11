@@ -1,1 +1,45 @@
+@charset "UTF-8";
 @import url('https://fonts.googleapis.com/css?family=Courgette|DM+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Anton|Bebas+Neue|Contrail+One|Lexend+Deca|Lobster|Staatliches&display=swap');
+
+/*
+font-family: 'Anton', sans-serif;
+font-family: 'Lobster', cursive;
+font-family: 'Bebas Neue', cursive;
+font-family: 'Staatliches', cursive;
+font-family: 'Contrail One', cursive;
+font-family: 'Lexend Deca', sans-serif;
+*/
+
+main>section>h3 {
+    font-family: 'Bebas Neue', cursive;
+}
+
+section>form{
+    width: 340px;
+    height: 440px;
+    background: #e6e6e6;
+    border-radius: 8px;
+    box-shadow: 0 0 40px -10px #000;
+    margin: 0 auto;
+    padding: 20px 30px;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
+    position: relative;
+}
+
+input{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background: none;
+    outline: none;
+    resize: none;
+    border: 0;
+    transition: all .3s;
+    border-bottom: 2px solid #bebed2;
+}
+
+input:focus{
+    border-bottom: 2px solid #78788c
+}
