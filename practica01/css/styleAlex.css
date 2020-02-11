@@ -197,7 +197,8 @@ footer {
             overflow: hidden;
         }
 
-        #articulos>div:nth-child(2)>article>h5 {
+        #articulos>div:nth-child(2)>article>h5,
+        #infoArticulo>div>article>h5 {
             text-align: center;
             font-size: 1.2em;
             margin-bottom: 10px;
@@ -289,4 +290,35 @@ footer {
         #precio>input {
             width: 120px;
             font-size: 1em;
+        }
+
+
+
+
+/*CSS para articulo.html*/
+
+#infoArticulo>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+    #infoArticulo>div>figure {
+        margin: 20px 20px 0 0;
+    }
+
+        #infoArticulo>div>figure>p {
+            text-align: center;
+            font-size: 1.5em;
+            white-space: pre;
+            color: var(--azulHover);
+        }
+
+    #infoArticulo>div>article {
+        margin: 20px 0 40px 20px;
+    }
+
+        #infoArticulo>div>article>h5 {
+            color: var(--azulOscuro);
         }
