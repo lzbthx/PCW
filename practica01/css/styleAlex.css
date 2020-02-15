@@ -387,7 +387,7 @@ footer {
 }
 
 #dejarPregunta {
-    margin-bottom: 40px;
+    margin-bottom: 80px;
 }
 
     #dejarPregunta>h5,
@@ -395,16 +395,23 @@ footer {
         font-size: 1.2em;
     }
 
-        #dejarPregunta>form>textarea {
+        #dejarPregunta>form>textarea,
+        #grupoPreguntas>div>p:nth-child(2),
+        #grupoPreguntas>div>div>p:nth-child(2) {
             width: 100%;
-            height: 80px;
-            margin-top: 15px;
-            margin-bottom: 10px;
             font-family: 'DM Sans', sans-serif;
             border: 2px solid var(--azulHover);
+            margin-bottom: 10px;
         }
 
-        #dejarPregunta>form>textarea:hover {
+        #dejarPregunta>form>textarea {
+            height: 80px;
+            margin-top: 15px;
+        }
+
+        #dejarPregunta>form>textarea:hover,
+        #grupoPreguntas>div>p:nth-child(2):hover,
+        #grupoPreguntas>div>div>p:nth-child(2):hover {
             border: 2px solid var(--azulOscuro);
         }
 
@@ -413,6 +420,107 @@ footer {
             justify-content: flex-end; /*Posiciona elementos al final del contenedor*/
         }
 
-#grupoPreguntas {
+    #grupoPreguntas>div {
+        margin: 20px 0 40px 50px;
+    }
 
+    #grupoPreguntas>div:last-child {
+        margin: 20px 0 0 50px;
+    }
+
+        #grupoPreguntas>div>p:first-child,
+        #grupoPreguntas>div>div>p:first-child {
+            font-size: .7em;
+            font-weight: bold;
+        }
+
+        #grupoPreguntas>div>p:nth-child(2),
+        #grupoPreguntas>div>div>p:nth-child(2) {
+            background-color: #fff;
+            padding: 7px;
+        }
+
+            #grupoPreguntas>div>div {
+                margin-left: 50px;
+            }
+            #grupoPreguntas>div>span {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+                #grupoPreguntas>div>span>button {
+                    font-size: 1em;
+                    padding: 5px;
+                }
+
+
+
+
+/*Media Queries*/
+
+@media all and (max-width: 878px) {
+
+    header>nav {
+        padding-top: 60px;
+    }
 }
+
+@media all and (max-width: 725px) {
+
+    header>nav>ul {
+        justify-content: initial;
+        flex-wrap: initial;
+    }
+
+    header>nav>ul>li {
+        display: inline-block;
+    }
+}
+
+
+
+
+/*
+header>nav {
+    padding-top: 140px;
+    width: 90%;
+}
+
+    header>nav>ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+        header>nav>ul>li {
+            margin: 40px 20px;
+        }
+
+            header>nav>ul>li>a {
+                padding: 20px;
+                text-decoration: none;
+                background-color: #fff;
+                border-radius: 3%;
+                color: var(--azulOscuro);
+                border: solid 3px var(--azulOscuro);
+                box-shadow: 4px 4px 4px var(--azulHover);
+                font-weight: bold;
+            }
+
+            header>nav>ul>li>a:hover {
+                background-color: var(--azulOscuro);
+                border-radius: 3%;
+                color: #fff;
+                border: solid 3px var(--azulOscuro);
+                box-shadow: 4px 4px 4px var(--azulHover);
+                transition: .3s;
+            }
+
+            header>nav>ul>li>a:active {
+                box-shadow: none;
+                transition: 0s;
+                position: relative;
+                top: 4px;
+                left: 4px;
+            }*/
