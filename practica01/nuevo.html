@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Alejandro Castro Valero">
+    <meta name="author" content="Elizabeth Balbín Medina">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>DLShop Inicio</title>
+    <link rel="stylesheet" href="css/styleAlex.css">
+    <link rel="stylesheet" href="css/styleEli.css">
+    <link rel="stylesheet" href="css/fontello.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+<body>
+    <header id="cabecera">
+        <hgroup>
+            <h1><a href="index.html"><img src="images/logo.png" alt="Logotipo de DLShop"></a></h1>
+            <h2>¡Compra a tu gusto!</h2>
+        </hgroup>
+        <nav>
+            <ul>
+                <li><a href="index.html"> <span class = "icon-home"></span><span>Inicio</span></a></li>
+                <li><a href="buscar.html"><span class = "icon-search"></span><span>Buscar</span></a></li>
+                <li><a href="nuevo.html"><span class ="icon-plus"></span><span>Nuevo artículo</span></a></li>
+                <li><a href="login.html"><span class = "icon-user"></span><span>Entrar</span></a></li>
+                <li><a href="registro.html"><span class = "icon-user-plus"></span><span>Registro</span></a></li>
+                <li><a href="index.html"><span class ="icon-logout"></span><span>Salir</span></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h3>Nuevo artículo</h3>
+            <section id="article">
+                <form name="new_article">
+                    <label for="nombre">Nombre del artículo: </label>
+                    <input type="text" name="nombre" id="nombre"><br>
+
+                    <label for="descripcion">Descripción: </label><br>
+                    <textarea name="descripcion" rows="10" cols="40" placeholder="Escribe aquí la descripción"></textarea><br>
+                
+                    <label for="precio">Precio: </label>
+                    <input type="number" name="precio" id="precio" min="0" pattern="^[0-9]" step="0.01"><br>
+                
+                    <label for="cat">Categoría: </label>
+                    <input type="text" list="lista_cat" name="cat" id="cat"><br>
+                    <datalist id="lista_cat">
+                        <option value="Moda y Accesorios">
+                        <option value="TV, Audio y Foto">
+                        <option value="Informática y Electrónica">
+                        <option value="Cine, Libros y Música">
+                        <option value="Consolas y Videojuegos">
+                        <option value="Deporte y Ocio">
+                    </datalist>
+                </form>
+            </section>
+        </section>
+    </main>
+    <footer>
+        <p><a href="acerca.html">Acerca</a></p>
+        <p>© DLShop 2020</p>
+        <p><a href="#cabecera">
+            <span class="icon-angle-circled-up"></span>
+        </a></p>
+    </footer>
+</body>
+</html>
