@@ -15,9 +15,13 @@ main>section>h3 {
     font-family: 'Bebas Neue', cursive;
 }
 
-section>form{
+section{
+    padding: 50px;
+}
+
+section>#entrar{
     width: 340px;
-    height: 440px;
+    height: 400px;
     background: #e6e6e6;
     border-radius: 8px;
     box-shadow: 0 0 40px -10px #000;
@@ -28,8 +32,22 @@ section>form{
     position: relative;
 }
 
-input{
+section>#registrar{
+    width: 340px;
+    height: 580px;
+    background: #e6e6e6;
+    border-radius: 8px;
+    box-shadow: 0 0 40px -10px #000;
+    margin: 0 auto;
+    padding: 20px 30px;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
+    position: relative;
+}
+
+[name="login"] > input, [name="registro"] > input{
     width: 100%;
+    height: 100%;
     padding: 10px;
     box-sizing: border-box;
     background: none;
@@ -40,6 +58,65 @@ input{
     border-bottom: 2px solid #bebed2;
 }
 
-input:focus{
+[name="login"] > input:focus, [name="registro"] > input:focus{
     border-bottom: 2px solid #78788c
 }
+
+[name="login"] > label > b, [name="registro"] > label > b{
+    padding: 10px;
+}
+
+#button_file{
+    margin: 0 auto;
+    padding: 10px;
+    width: 150px;
+    background-color: #2499e3;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 150px;
+  }
+
+/* Para ocultar el input type="file" 
+input#file{
+    position: absolute;
+    width: 50%;
+    height: 55%;
+    right: 8px;
+    left: 90px;
+    top: 250px;
+    opacity: 0;
+}*/
+
+.upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    outline: -webkit-focus-ring-color auto 5px;
+    opacity: 0;
+  }
+
+.btn {
+    border: 2px solid gray;
+    width: 150px;
+    color: gray;
+    background-color: white;
+    padding: 6px;
+    margin: 15px 0 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+.upload-btn-wrapper > img{
+    width: 150px;
+    height: 150px;
+    padding: 10px 0px 0px 0px;
+}
+
