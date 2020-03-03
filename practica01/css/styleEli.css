@@ -34,7 +34,7 @@ section>#entrar{
 
 section>#registrar{
     width: 340px;
-    height: 580px;
+    height: 600px;
     background: #e6e6e6;
     border-radius: 8px;
     box-shadow: 0 0 40px -10px #000;
@@ -45,11 +45,29 @@ section>#registrar{
     position: relative;
 }
 
+#boton_log, #boton_reg{
+    float: right;
+    padding:8px 12px;
+    margin: 20px 0 20px 0;
+    font-family: 'Montserrat', sans-serif;
+    border:2px solid #78788c;
+    background:0;
+    color: #5a5a6e;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+#boton_log:hover, #boton_reg:hover {
+    background:#058dac;
+    color:#fff
+}
+
 [name="login"] > input, [name="registro"] > input{
     width: 100%;
     height: 100%;
     padding: 10px;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
     background: none;
     outline: none;
     resize: none;
@@ -59,18 +77,11 @@ section>#registrar{
 }
 
 [name="login"] > input:focus, [name="registro"] > input:focus{
-    border-bottom: 2px solid #78788c
+    border-bottom: 2px solid #058dac;
 }
 
 [name="login"] > label > b, [name="registro"] > label > b{
     padding: 10px;
-}
-
-#button_file{
-    margin: 0 auto;
-    padding: 10px;
-    width: 150px;
-    background-color: #2499e3;
 }
 
 .upload-btn-wrapper {
