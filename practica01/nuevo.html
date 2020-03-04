@@ -31,20 +31,21 @@
     </header>
     <main>
         <section>
-            <h3>Nuevo artículo</h3>
+            <h3>Publicar artículo</h3>
             <section id="article">
-                <form name="new_article">
+                <h4>Nuevo artículo</h4>
+                <form>
                     <label for="nombre">Nombre del artículo: </label>
-                    <input type="text" name="nombre" id="nombre"><br>
+                    <input type="text" name="nombre" id="nombre" maxlength="100" placeholder="Nombre del artículo, máx. 100 caracteres" required autofocus><br>
 
-                    <label for="descripcion">Descripción: </label><br>
-                    <textarea name="descripcion" rows="10" cols="40" placeholder="Escribe aquí la descripción"></textarea><br>
+                    <label for="descripcion">Descripción: </label>
+                    <textarea name="descripcion" id="descripcion" rows="10" cols="100" maxlength="300" placeholder="Escribe aquí la descripción, máx. 300 caracteres"></textarea><br>
                 
                     <label for="precio">Precio: </label>
-                    <input type="number" name="precio" id="precio" min="0" pattern="^[0-9]" step="0.01"><br>
+                    <input type="number" name="precio" id="precio" min="0" step="0.01" placeholder="00.00">
                 
                     <label for="cat">Categoría: </label>
-                    <input type="text" list="lista_cat" name="cat" id="cat"><br>
+                    <input type="text" list="lista_cat" name="cat" id="cat" maxlength="100">
                     <datalist id="lista_cat">
                         <option value="Moda y Accesorios">
                         <option value="TV, Audio y Foto">
@@ -53,9 +54,20 @@
                         <option value="Consolas y Videojuegos">
                         <option value="Deporte y Ocio">
                     </datalist>
+                    
+                    <label>Foto del artículo:</label>
+                    <div>
+                        <input type="file" name="foto" id="file-input" class="inputfile">
+                        <label for="file-input">
+                            <img src="Images/no-image.png" width="200" height="200" alt="Foto no disponible">
+                        </label><br>
+                        <label for="file">Seleccionar foto</label>
+                        <input type="file" name="file" id="file" class="inputfile" accept="image/*"/>
+                        <button type="reset">Eliminar foto</button>
+                    </div>
                 </form>
             </section>
-        </section>
+        </section>     
     </main>
     <footer>
         <p><a href="acerca.html">Acerca</a></p>
