@@ -168,23 +168,32 @@ body>main>section>section#article>div>form{
         margin: 0 auto;
     }
 
-    body>main>section>section#article>div>form>div>button{
-        text-decoration: none;
-        float: right;
-        padding: 10px;
+    body>main>section>section#article>div>form>div>button,
+    #subir-label{
+        cursor: pointer;
+        padding: 5px;
+        font-size: 1em;
+        font-weight: 700;
+        color: white;
+        background-color: #1d1c1c;
+        display: inline-block;
         margin: 10px;
-        font-weight: 600;
-        font-size: 18px;
-        color: #ffffff;
-        background-color: #bebed2; 
-        border: 2px solid #bebed2;
     }
 
-        body>main>section>section#article>div>form>div>button:hover{
+        body>main>section>section#article>div>form>div>button:hover,
+        #subir-label:hover{
             background:#058dac;
             color:#fff
         }
 
+        .subir{
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
 
         /* Media queries */
         @media all and (min-width:900px){
