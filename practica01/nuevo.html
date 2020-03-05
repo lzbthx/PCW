@@ -6,7 +6,7 @@
     <meta name="author" content="Elizabeth Balbín Medina">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>DLShop Inicio</title>
+    <title>DLShop - Nuevo</title>
     <link rel="stylesheet" href="css/styleAlex.css">
     <link rel="stylesheet" href="css/styleEli.css">
     <link rel="stylesheet" href="css/fontello.css">
@@ -40,13 +40,13 @@
                         <input type="text" name="nombre" id="nombre" maxlength="100" placeholder="Nombre del artículo, máx. 100 caracteres" required autofocus><br>
     
                         <label for="descripcion">Descripción: </label>
-                        <textarea name="descripcion" id="descripcion" rows="10" cols="100" maxlength="300" placeholder="Escribe aquí la descripción, máx. 300 caracteres"></textarea><br>
+                        <textarea name="descripcion" id="descripcion" rows="10" cols="100" maxlength="300" placeholder="Escribe aquí la descripción, máx. 300 caracteres" required></textarea><br>
                     
                         <label for="precio">Precio: </label>
-                        <input type="number" name="precio" id="precio" min="0" step="0.01" placeholder="00.00">
+                        <input type="number" name="precio" id="precio" min="0" step="0.01" required placeholder="00.00">
                     
                         <label for="cat">Categoría: </label>
-                        <input type="text" list="lista_cat" name="cat" id="cat" maxlength="100">
+                        <input type="text" list="lista_cat" name="cat" id="cat" required maxlength="100">
                         <datalist id="lista_cat">
                             <option value="Moda y Accesorios">
                             <option value="TV, Audio y Foto">
@@ -58,13 +58,13 @@
                         
                         <label>Foto del artículo:</label>
                         <div>
-                            <input type="file" name="foto" id="file-input" class="inputfile">
+                            <input type="file" name="foto" id="file-input" required class="inputfile">
                             <label for="file-input">
                                 <img src="Images/no-image.png" width="200" height="200" alt="Foto no disponible">
                             </label><br>
 
-                            <label for="subir" id="subir-label">Subir foto</label>
-                            <input type="file" name="subir" id="subir" class="subir" />
+                            <label for="subir" id="subir-label">Seleccionar foto</label>
+                            <input type="file" name="subir" id="subir" required class="subir" />
                             <button type="reset">Eliminar foto</button>
                         </div>
                     </form>

@@ -117,15 +117,14 @@ body>main>section>section#registrar{
 
 body>main>section>section#article{
     text-align: center;
-    margin: 0 400px;
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 body>main>section>section#article>div>form{
     display: flex;
     flex-direction: column;
     text-align:center;
-    margin-left: 40px;
-    margin-right: 40px;
 }
 
     body>main>section>section#article>div>form>label{
@@ -152,7 +151,6 @@ body>main>section>section#article>div>form{
     }
     
     body>main>section>section#article>div>form>textarea{
-        width: 550px;	
         border: none;
         border-radius: 20px;
         outline: none;
@@ -195,14 +193,10 @@ body>main>section>section#article>div>form{
             z-index: -1;
         }
 
-        /* Media queries */
-        @media all and (min-width:900px){
-            #nuevo-form {
-              text-align: center;
-              margin-left: 15%;
-              margin-right: 15%;
-            }
-          }
+        #nuevo-form{
+            margin-left: 10%;
+            margin-right: 10%;
+        }
 
 /* CSS página Acerca */
 
@@ -210,4 +204,25 @@ body>main>section>section#alex>article,
 body>main>section>section#eli>article{
     padding: 5px 30px;
     font-size: large;
+}
+
+/* Media queries */
+
+@media all and (max-width: 1086px){
+    body>main>section>section#article{
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+}
+
+@media all and (max-width: 880px) {
+
+    body>main>section>section#article{
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+
+    body>main>section>section#article>div>form>textarea{
+        width: 420px;
+    }
 }
