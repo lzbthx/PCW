@@ -6,13 +6,9 @@ main>section>h3 {
     font-family: 'Bebas Neue', cursive;
 }
 
-body>main>section{
-    margin: 50px;
-}
-
 /* CSS para Login */
-body>main>section>section#entrar{
-    width: 350px;
+body>main>section>section#entrar>div{
+    width: 380px;
     height: 400px;
     background: #e6e6e6;
     border-radius: 8px;
@@ -24,9 +20,14 @@ body>main>section>section#entrar{
     position: relative;
 }
 
+body>main>section>section#entrar>h4,
+body>main>section>section#registrar>h4{
+    text-align: center;
+}
+
 /* CSS para Registro */
-body>main>section>section#registrar{
-    width: 350px;
+body>main>section>section#registrar>div{
+    width: 380px;
     height: 600px;
     background: #e6e6e6;
     border-radius: 8px;
@@ -38,7 +39,7 @@ body>main>section>section#registrar{
     position: relative;
 }
 
-/* Botones para ambos formularios */
+/* Elementos en común para ambos formularios */
 #boton_log, #boton_reg{
     float: right;
     padding: 8px 12px;
@@ -70,17 +71,17 @@ body>main>section>section#registrar{
 }
 
 [name="login"]>input:focus, [name="registro"]>input:focus{
-    border-bottom: 2px solid #058dac;
+    border-bottom: 3px solid #058dac;
 }
 
 [name="login"]>label>b, [name="registro"]>label>b{
     padding: 10px;
 }
 
-form[name="registro"]>input:hover{
+form[name="login"]>input:hover, form[name="registro"]>input:hover, form[name="nuevo"]>input:hover{
     transition: all .3s;
     color: white;
-    box-shadow: inset 0 0 0 50px rgb(5, 141, 172);
+    box-shadow: inset 0 0 0 50px rgb(255, 211, 173);
 }
 
 .upload-btn-wrapper {
@@ -202,6 +203,10 @@ body>main>section>section#article>div>form{
             color:#fff
         }
 
+        section#article>div>form>input:focus{
+            border-bottom: 3px solid #058dac;
+        }
+
         .subir{
             width: 0.1px;
             height: 0.1px;
@@ -222,22 +227,30 @@ body>main>section>section#article>div>form{
         margin-left: 15%;
         margin-right: 15%;
     }
+
+    section#acerca{
+        max-width: 100%;
+    }
     section#acerca>h4{
         text-align:center;
     }
     
-    section#acerca>article{
+    section#acerca>div>div>article>h4{
+        font-size: x-large;
+    }
+
+    section#acerca>article,
+    #acerca>div>div>article{
         text-align:center;
         font-size:20px;
     }
+
     main>section>section#acerca>div#flex{
         display:flex;
         justify-content: space-around;
+        margin: 15px;
     }
-    #acerca>div>div>article>p{
-        font-size: 25px;
-    }
-
+    
 /* Media queries */
 
 @media all and (max-width: 1086px){
