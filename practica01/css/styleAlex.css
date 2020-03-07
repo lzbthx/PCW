@@ -630,7 +630,7 @@ footer {
     header>nav>ul>li>a:hover {
         border: none;
         color: var(--azulOscuro);
-        background-color: #fff;
+        background-color: var(--azulClaro);
     }
 
     header>nav>ul>li:first-child>a:hover {
@@ -673,7 +673,7 @@ footer {
     }
  
     header>nav>ul>li>a:hover {
-        background-color: #fff;
+        background-color: var(--azulClaro);
         color: var(--azulOscuro);
         border: none;
         border-bottom: 2px solid #fff;
