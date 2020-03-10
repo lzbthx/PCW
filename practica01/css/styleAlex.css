@@ -49,6 +49,28 @@ header {
             text-shadow: 2px 2px 2px var(--azulHover);
         }
 
+    header>input {
+        display: none;
+    }
+
+    header>label {
+        display: none;
+    }
+
+        header>label>i {
+            font-size: 2em;
+            color: var(--azulOscuro);
+            padding: 15px 19px;
+            display: block;
+        }
+
+        header>label>i:hover {
+            cursor: pointer;
+            color: #fff;
+            background-color: var(--azulOscuro);
+            transition: .3s;
+        }
+
     header>nav {
         padding-top: 140px;
         width: 90%;
@@ -110,7 +132,7 @@ main>section>section {
     main>section>section>h4 {
         color: #000;
         padding: 30px;
-        font-size: 1.5em;
+        font-size: 1.8em;
     }
 
 footer {
@@ -237,15 +259,18 @@ footer {
                 font-weight: bold;
             }
 
-            #articulos>div:nth-child(2)>article>div>p:nth-child(1) {
+            #articulos>div:nth-child(2)>article>div>p:nth-child(1),
+            #infoArticulo>div>article>p:nth-child(3) {
                 color: #b3b300;
             }
 
-            #articulos>div:nth-child(2)>article>div>p:nth-child(2) {
+            #articulos>div:nth-child(2)>article>div>p:nth-child(2),
+            #infoArticulo>div>article>p:nth-child(4) {
                 color: #b30000;
             }
 
-            #articulos>div:nth-child(2)>article>div>p:nth-child(3) {
+            #articulos>div:nth-child(2)>article>div>p:nth-child(3),
+            #infoArticulo>div>article>p:nth-child(5) {
                 color: #00b300;
             }
 
@@ -297,28 +322,395 @@ footer {
 
 /*CSS para articulo.html*/
 
+.boton {
+    padding: 10px 30px;
+    font-size: 1.3em;
+    background-color: var(--azulHover);
+    color: #fff;
+    border: 2px solid var(--azulHover);
+    border-radius: 3%;
+    font-weight: bold;
+}
+
+.boton:hover {
+    background-color: #fff;
+    color: var(--azulHover);
+    cursor: pointer;
+    transition: .3s;
+}
+
 #infoArticulo>div {
+    width: 780px;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #fff;
+    padding: 40px 30px 10px 30px;
+    border-radius: 1%;
 }
-
-    #infoArticulo>div>figure {
-        margin: 20px 20px 0 0;
-    }
 
         #infoArticulo>div>figure>p {
             text-align: center;
             font-size: 1.5em;
-            white-space: pre;
+            white-space: pre; /*Representa todos los espacios en blanco*/
             color: var(--azulHover);
+            padding-top: 5px;
         }
 
     #infoArticulo>div>article {
-        margin: 20px 0 40px 20px;
+        width: 100%;
+        margin: 0 0 40px 20px;
     }
 
         #infoArticulo>div>article>h5 {
-            color: var(--azulOscuro);
+            color: var(--azulHover);
         }
+
+        #infoArticulo>div>article>p {
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        #infoArticulo>div>article>p:nth-child(6) {
+            color: #b31a91;
+        }
+
+        #infoArticulo>div>article>p:nth-child(2)>a,    
+        #infoArticulo>div>article>p:nth-child(6)>a {
+                color: #b31a91;
+            }
+
+            #infoArticulo>div>article>p:nth-child(2)>a,
+            #infoArticulo>div>article>p:nth-child(6)>a {
+                text-decoration: none;
+            }
+
+            #infoArticulo>div>article>p:nth-child(2)>a:hover,
+            #infoArticulo>div>article>p:nth-child(6)>a:hover {
+                text-decoration: underline;
+            }
+
+        #infoArticulo>div>article>p>button {
+            margin: 40px 0 0 100px;
+        }
+
+#infoArticulo>p {
+    width: 90%;
+    margin: 30px auto 0 auto;
+    text-align: center;
+    font-weight: bold;
+}
+
+#dejarPregunta,
+#grupoPreguntas {
+    width: 93%;
+    margin: 10px auto;
+}
+
+#dejarPregunta {
+    margin-bottom: 80px;
+}
+
+    #dejarPregunta>h5,
+    #grupoPreguntas>h5 {
+        font-size: 1.2em;
+    }
+
+        #dejarPregunta>form>textarea,
+        #grupoPreguntas>div>p:nth-child(2),
+        #grupoPreguntas>div>div>p:nth-child(2) {
+            width: 100%;
+            font-family: 'DM Sans', sans-serif;
+            border: 2px solid var(--azulHover);
+            margin-bottom: 10px;
+        }
+
+        #dejarPregunta>form>textarea {
+            height: 80px;
+            margin-top: 15px;
+        }
+
+        #dejarPregunta>form>textarea:hover,
+        #grupoPreguntas>div>p:nth-child(2):hover,
+        #grupoPreguntas>div>div>p:nth-child(2):hover {
+            border: 2px solid var(--azulOscuro);
+        }
+
+        #dejarPregunta>form>div {
+            display: flex;
+            justify-content: flex-end; /*Posiciona elementos al final del contenedor*/
+        }
+
+    #grupoPreguntas>div {
+        margin: 20px 0 40px 50px;
+    }
+
+    #grupoPreguntas>div:last-child {
+        margin: 20px 0 0 50px;
+    }
+
+        #grupoPreguntas>div>p:first-child,
+        #grupoPreguntas>div>div>p:first-child {
+            font-size: .7em;
+            font-weight: bold;
+        }
+
+        #grupoPreguntas>div>p:nth-child(2),
+        #grupoPreguntas>div>div>p:nth-child(2) {
+            background-color: #fff;
+            padding: 7px;
+        }
+
+            #grupoPreguntas>div>div {
+                margin-left: 50px;
+            }
+            #grupoPreguntas>div>span {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+                #grupoPreguntas>div>span>button {
+                    font-size: 1em;
+                    padding: 5px;
+                }
+
+
+
+
+/*Media Queries*/
+
+
+@media all and (max-width: 878px) {
+
+    header>nav {
+        padding-top: 60px;
+    }
+
+    #infoArticulo>div {
+        flex-direction: column;
+        width: 480px;
+        padding: 20px 10px 0 10px;
+    }
+
+    #infoArticulo>div>figure>p {
+        padding-bottom: 7px;
+    }
+
+    #infoArticulo>div>article {
+        margin: 0 0 30px 20px;
+        padding-bottom: 25px;
+    }
+
+    #infoArticulo>div>article {
+        margin: 0;
+        text-align: center;
+    }
+
+    #infoArticulo>div>article>p>button {
+        margin: 20px 0 0 0;
+    }
+}
+
+
+@media all and (max-width: 725px) {
+
+    header>nav {
+        padding-top: 40px;
+    }
+
+    header>nav>ul>li {
+        width: 80%;
+        margin: 0px auto;
+    }
+
+    header>nav>ul>li>a {
+        display: flex;
+        justify-content: center;
+        background-color: initial;
+        border: none;
+        border-bottom: 2px solid var(--azulOscuro);
+        box-shadow: none;
+        padding: 15px 0px;
+        border-radius: 0%; /*Si quitamos el radio, nos produce un bug al hacer hover sobre el borde*/
+    }
+
+    header>nav>ul>li:first-child>a {
+        border-top: 2px solid var(--azulOscuro);
+    }
+
+    header>nav>ul>li:first-child>a:hover {
+        border-top: 2px solid var(--azulOscuro);
+    }
+
+    header>nav>ul>li>a:hover {
+        background-color: var(--azulOscuro);
+        color: #fff;
+        border: none;
+        border-bottom: 2px solid var(--azulOscuro);
+        box-shadow: none;
+        transition: .3s;
+        border-radius: 0%;
+    }
+
+    header>nav>ul>li:first-child>a:hover {
+        border-top: 2px solid var(--azulOscuro);
+    }
+
+    header>nav>ul>li>a:active {
+        position: initial;
+    }
+}
+
+
+@media all and (max-width: 660px) {
+
+    #busquedaGold>form {
+        flex-wrap: initial;
+        flex-direction: column;
+    }
+
+    #busquedaGold>form>p {
+        width: 100%;
+    }
+
+    #precio>input {
+        width: 80px;
+    }
+}
+
+
+@media all and (max-width: 620px) {
+
+    #infoArticulo>div {
+        background-color: initial;
+        width: 80%;
+    }
+}
+
+
+@media all and (max-width: 550px) {
+
+    header {
+        flex-direction: column;
+    }
+
+    header>hgroup>h2 {
+        text-align: center;
+    }
+
+    header>nav {
+        padding-top: 0px;
+        width: 100%;
+    }
+
+    header>nav>ul {
+        width: 100%;
+        justify-content: initial;
+        flex-wrap: initial;
+        flex-direction: row;
+    }
+
+    header>nav>ul>li {
+        width: initial;
+        margin: initial;
+        flex-grow: 1;
+    }
+
+    header>nav>ul>li>a {
+        border: none;
+        color: #fff;
+        background-color: var(--azulOscuro);
+    }
+
+    header>nav>ul>li:first-child>a {
+        border-top: none;
+    }
+
+    header>nav>ul>li>a:hover {
+        border: none;
+        color: var(--azulOscuro);
+        background-color: var(--azulClaro);
+    }
+
+    header>nav>ul>li:first-child>a:hover {
+        border-top: none;
+    }
+
+    header>nav>ul>li>a>span:last-child {
+        display: none;
+    }
+
+    main>section>section {
+        margin: 0 0 50px 0;
+    }
+}
+
+
+@media all and (max-width: 479px) {
+
+    header>hgroup {
+        padding: 70px 20px 50px 20px;
+    }
+
+    header>nav>ul {
+        flex-direction: column;
+    }
+
+    header>nav>ul>li>a {
+        font-size: 1.3em;
+        border: none;
+        border-bottom: 2px solid #fff;
+        border-radius: 0%;
+    }
+
+    header>nav>ul>li:first-child>a {
+        border-top: 2px solid var(--azulOscuro);
+    }
+
+    header>nav>ul>li:first-child>a:hover {
+        border-top: 2px solid #fff;
+    }
+ 
+    header>nav>ul>li>a:hover {
+        background-color: var(--azulClaro);
+        color: var(--azulOscuro);
+        border: none;
+        border-bottom: 2px solid #fff;
+        box-shadow: none;
+        transition: .3s;
+        border-radius: 0%;
+    }
+
+    header>nav>ul>li>a>span:last-child {
+        display: initial;
+    }
+
+    /*Cuando aparece el menú desplegable y desaparece*/
+    header>label {
+        display: initial;
+    }
+
+    #btn-menu:not(:checked)~nav { 
+        margin-left: -100%;
+        height: 0;
+    }
+    
+    #btn-menu:checked~nav {
+        margin: 0;
+        transition: all .5s;
+    }
+}
+
+
+@media all and (max-width: 370px) {
+
+    footer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    footer>p {
+        padding: 10px;
+    }
+}

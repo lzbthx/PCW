@@ -18,6 +18,8 @@
             <h1><a href="index.html"><img src="images/logo.png" alt="Logotipo de DLShop"></a></h1>
             <h2>¡Compra a tu gusto!</h2>
         </hgroup>
+        <input type="checkbox" id="btn-menu">
+        <label for="btn-menu"><i class="fas fa-bars"></i></label>
         <nav>
             <ul>
                 <li><a href="index.html"> <span class = "icon-home"></span><span>Inicio</span></a></li>
@@ -37,8 +39,7 @@
                 <div>
                     <figure>
                         <img src="Images/destornillador-electrico-xiaomi.jpg" alt="Foto no disponible" width="400">
-                        <p><i class="fas fa-arrow-left"></i> <span>  1 de 6  </span> <i class="fas fa-arrow-right"></i>
-                        </p>
+                        <p><i class="fas fa-arrow-left"></i> <span>  1 de 6  </span> <i class="fas fa-arrow-right"></i></p>
                     </figure>
                     <article>
                         <h5>Destornillador eléctrico Xiaomi</h5>
@@ -47,7 +48,9 @@
                         <p><i class="fas fa-eye"></i> 73</p>
                         <p class="icon-user"> 8</p>
                         <p class="icon-comment"> <a href="#grupoPreguntas">2</a></p>
-                        <button>Seguir</button>
+                        <p>
+                            <button class="boton">Seguir</button>
+                        </p>
                     </article>
                 </div>
                 <p>El nuevo destornillador eléctrico de Xiaomi tiene un diseño realmente atractivo en el que el “estilo Xiaomi”, caracterizado por el minimalismo y las líneas puras tiene mucha presencia. El cuenta con tres posiciones que le permiten aflojar y apretar en función del sentido de giro, así como una tercera que bloquea el giro. El nuevo destornillador de Mijia cuenta con una fuerza de apriete de 4 N.M. e integra una batería de 2.000 mAh que, según la marca, da para unos 180 usos por cada carga.</p>
@@ -58,7 +61,9 @@
                     <h5>Dejar una pregunta para el vendedor</h5>
                     <form action="articulo.html">
                         <textarea name="pregunta" id="pregunta"></textarea>
-                        <input type="submit" value="Enviar">
+                        <div>
+                            <input type="submit" value="Enviar"  class="boton">
+                        </div>
                     </form>
                 </section>
                 <section id="grupoPreguntas">
@@ -72,8 +77,11 @@
                         </div>
                     </div>
                     <div>
-                        <p>Vendedor <time datetime="2020-02-02 09:30">2-febrero-2020, a las 09:32h</time></p>
+                        <p>Juanki <time datetime="2020-02-02 09:30">2-febrero-2020, a las 09:32h</time></p>
                         <p>De qué material está hecho la carcasa?</p>
+                        <span>
+                            <button class="boton">Responder</button>
+                        </span>
                     </div>
                 </section>
             </section>
@@ -81,7 +89,7 @@
     </main>
     <footer>
         <p><a href="acerca.html">Acerca</a></p>
-        <p>© DLShop 2020</p>
+        <p>© DLShop <time datetime="2020-02">2020</time></p>
         <p><a href="#cabecera">
             <span class="icon-angle-circled-up"></span>
         </a></p>
