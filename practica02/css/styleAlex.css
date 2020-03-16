@@ -293,6 +293,16 @@ footer {
         white-space: pre; /*Mantenemos los espacios en blanco*/
     }
 
+    #articulos>div:nth-child(3)>p:hover {
+        cursor: pointer;
+        color: grey;
+    }
+
+    #articulos>div:nth-child(3)>p:nth-child(3):hover {
+        cursor: initial;
+        color: initial;
+    }
+
 
 
 

@@ -1,3 +1,7 @@
+/////////////   VARIABLES GLOBALES  /////////////
+var paginaActual = 0,
+    totalPaginas;
+
 
 
 // Funciones para acercarme a JQuery
@@ -26,6 +30,9 @@ function load() {
             ultimoSlash = url.lastIndexOf('/'),
             page = url.substring(ultimoSlash+1);
 
+        if (page.lastIndexOf('buscar.html') != -1) {
+            page = 'buscar.html'
+        }
         page = (page == ''  ||  page == 'index.html#cabecera') ? 'index.html' : page;
 
         // Cargamos el contenido dinámico...
@@ -85,15 +92,28 @@ function comprobarSoporteWebStorage() {
 
 
 
+
+
+
+////////////////////////////////// ÍNDICE //////////////////////////////////////////////////////////////////
+
 // Función para cargar un contenido en función de la página
 function cargarInicio(pagina) {
 
     switch(pagina) {
         
         case 'index.html':
-            peticionPaginaArticulos(0);
+            peticionPaginaArticulos();
             $('#busqueda>form').onsubmit = function() {
                 return busquedaRapida();
+            };
+            cambioPagina();
+            break;
+
+        case 'buscar.html':
+            //consultaInicial();
+            $('#busquedaGold>form').onsubmit = function() {
+                return consultaConFiltros();
             };
             break;
 
@@ -104,12 +124,17 @@ function cargarInicio(pagina) {
     }
 }
 
+////////////////////////////////// ÍNDICE //////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 // Función para pedir los artículos de una determinada página
-function peticionPaginaArticulos(numeroPagina) {
+function peticionPaginaArticulos() {
     let xhr = new XMLHttpRequest(),
-        url = 'api/articulos?pag=' + numeroPagina + '&lpag=6',
+        url = 'api/articulos?pag=' + paginaActual + '&lpag=6',
         section = $('#articulos>div:nth-child(2)'),
         fotos;
 
@@ -124,6 +149,12 @@ function peticionPaginaArticulos(numeroPagina) {
     // Si finaliza la conexión con éxito...
     xhr.onload = function() {
         fotos = JSON.parse(xhr.responseText);
+
+        // Actualizamos paginación...
+        totalPaginas = Math.ceil(fotos.TOTAL_COINCIDENCIAS / 6);
+        $$('#articulos>div:last-child>p', 2).innerHTML = ` ${paginaActual+1}/${totalPaginas} `;
+
+        // Creamos e incluimos artículos...
         fotos.FILAS.forEach(function(foto) {
             section.appendChild(crearFoto(foto));
         });
@@ -147,9 +178,7 @@ function crearFoto(foto) {
         div = document.createElement('div');
 
     // Parte 1: Encabezados
-    enlace.setAttribute('href', 'articulo.html?id='+foto.id);
-    enlace.textContent = foto.nombre;
-    titulo.appendChild(enlace);
+    titulo.innerHTML = `<a href="articulo.html?id=${foto.id}">${foto.nombre}</a>`;
     articleFoto.appendChild(titulo);
 
     // Parte 2: Imagen
@@ -157,6 +186,7 @@ function crearFoto(foto) {
     img.setAttribute('src', 'fotos/articulos/'+foto.imagen);
     img.setAttribute('alt', 'Foto no disponible');
     img.setAttribute('width', '400');
+    img.setAttribute('height', '300');
     enlace.appendChild(img);
     parrafo1.appendChild(enlace);
     articleFoto.appendChild(parrafo1);
@@ -196,6 +226,80 @@ function busquedaRapida() {
         location.href = 'buscar.html?t=' + texto;
     }
 
-    // Para que no se recargue y ejecute a redirección...
+    // Para que no se recargue, y ejecute a redirección...
     return false;
+}
+
+
+
+// Función para ejecutar el cambio de pagina de artículos en función del botón
+function cambioPagina() {
+    let botonera = $All('#articulos>div:last-child>p');
+    
+    // Volver al inicio...
+    botonera[0].onclick = function() {
+        if (paginaActual > 0) {
+            paginaActual = 0;
+            borrarArticulos();
+            peticionPaginaArticulos();
+        }
+    };
+
+    // Una página atrás...
+    botonera[1].onclick = function() {
+        if (paginaActual > 0) {
+            paginaActual--;
+            borrarArticulos();
+            peticionPaginaArticulos();
+        }
+    };
+
+    // Una página adelante...
+    botonera[3].onclick = function() {
+        if (paginaActual < totalPaginas-1) {
+            paginaActual++;
+            borrarArticulos();
+            peticionPaginaArticulos();
+        }
+    };
+
+    // Ir a la última página...
+    botonera[4].onclick = function() {
+        if (paginaActual < totalPaginas-1) {
+            paginaActual = totalPaginas-1;
+            borrarArticulos();
+            peticionPaginaArticulos();
+        }
+    };
+}
+
+
+
+// Función para limpiar todos los artículos de una página para añadir nuevos
+function borrarArticulos() {
+    let lista = $('#articulos>div:nth-child(2)');
+
+    while (lista.hasChildNodes()) {
+        lista.removeChild(lista.firstChild);
+    }
+}
+
+
+
+// Función para ejecutar la posible consulta inicial que pueda instanciarse en la url
+function consultaInicial() {
+
+}
+
+
+
+// Función para ejecutar una consulta al sevidor de articulos filtrando por parámetros
+function consultaConFiltros() {
+    let devuelve = '',
+        xhr = new XMLHttpRequest(),
+        fd = new FormData($('#busquedaGold>form'));
+
+    if (fd.get('buscar') != ''  &&  fd.get('buscar') != '') {
+        devuelve
+    }
 }
