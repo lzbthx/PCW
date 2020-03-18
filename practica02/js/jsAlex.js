@@ -1,6 +1,7 @@
 /////////////   VARIABLES GLOBALES  /////////////
 var paginaActual = 0,
-    totalPaginas;
+    totalPaginas,
+    paramConsulta = '';
 
 
 
@@ -42,7 +43,7 @@ function load() {
         let paginas = $All('nav>ul>li>a>span:last-child');
 
         // Comprobamos si el usuario está logueado o no...
-        if (sessionStorage.getItem('usuario')) {
+        if (sessionStorage.getItem('login')) {
 
             if (page == 'login.html'  ||  page == 'registro.html') {
                 location.href = 'index.html';
@@ -100,7 +101,7 @@ function comprobarSoporteWebStorage() {
 // Función para cargar un contenido en función de la página
 function cargarInicio(pagina) {
 
-    switch(pagina) {
+    switch (pagina) {
         
         case 'index.html':
             peticionPaginaArticulos();
@@ -111,9 +112,9 @@ function cargarInicio(pagina) {
             break;
 
         case 'buscar.html':
-            //consultaInicial();
+            consultaInicial();
             $('#busquedaGold>form').onsubmit = function() {
-                return consultaConFiltros();
+                return consultaConParametros();
             };
             break;
 
@@ -134,34 +135,58 @@ function cargarInicio(pagina) {
 // Función para pedir los artículos de una determinada página
 function peticionPaginaArticulos() {
     let xhr = new XMLHttpRequest(),
-        url = 'api/articulos?pag=' + paginaActual + '&lpag=6',
+        url = 'api/articulos?',
         section = $('#articulos>div:nth-child(2)'),
-        fotos;
+        fotos, ejecutar = true;
+    
+    // Completamos la url para el servidor...
+    if (paramConsulta != ''  &&  location.href.indexOf('buscar.html') != -1) {
+        url += paramConsulta + '&pag=' + paginaActual + '&lpag=6';
+    } else if (location.href.indexOf('index.html') != -1) {
+        url += 'pag=' + paginaActual + '&lpag=6';
+    } else {
+        ejecutar = false;
+    }
 
-    // Abrimos la petición al servidor...
-    xhr.open('GET', url, true);
+    if (ejecutar) {
 
-    // Se ejecuta con problemas en la petición ajenos al servidor...
-    xhr.onerror = function() {
-        console.warn('Se ha producido un error en la petición...');
-    };
+        // Abrimos la petición al servidor...
+        xhr.open('GET', url, true);
 
-    // Si finaliza la conexión con éxito...
-    xhr.onload = function() {
-        fotos = JSON.parse(xhr.responseText);
+        // Se ejecuta con problemas en la petición ajenos al servidor...
+        xhr.onerror = function() {
+            console.warn('Se ha producido un error en la petición...');
+        };
 
-        // Actualizamos paginación...
-        totalPaginas = Math.ceil(fotos.TOTAL_COINCIDENCIAS / 6);
-        $$('#articulos>div:last-child>p', 2).innerHTML = ` ${paginaActual+1}/${totalPaginas} `;
+        // Si finaliza la conexión con éxito...
+        xhr.onload = function() {
+            fotos = JSON.parse(xhr.responseText);
+            borrarArticulos();
 
-        // Creamos e incluimos artículos...
-        fotos.FILAS.forEach(function(foto) {
-            section.appendChild(crearFoto(foto));
-        });
-    };
+            if (fotos.FILAS.length > 0) {
 
-    // Enviamos la petición al servidor...
-    xhr.send();
+                // Actualizamos paginación...
+                totalPaginas = Math.ceil(fotos.TOTAL_COINCIDENCIAS / 6);
+                $$('#articulos>div:last-child>p', 2).innerHTML = ` ${paginaActual+1}/${totalPaginas} `;
+
+                // Creamos e incluimos artículos...
+                fotos.FILAS.forEach(function(foto) {
+                    section.appendChild(crearFoto(foto));
+                });
+            } else {
+                $('#articulos>div:nth-child(2)').innerHTML = `<p style="font-size: 1.5em;">No se encontraron resultados.</p>`;
+                $$('#articulos>div:last-child>p', 2).innerHTML = ` 0/0 `;
+            }
+        };
+
+        // Para pasar estos parámetros necesita cabecera con autorización...
+        if (paramConsulta.indexOf('mios') != -1  ||  paramConsulta.indexOf('siguiendo') != -1) {
+            xhr.setRequestHeader('Authorization', sessionStorage.getItem('login') + ':' + sessionStorage.getItem('token'));
+        }
+
+        // Enviamos la petición al servidor...
+        xhr.send();
+    }
 }
 
 
@@ -187,6 +212,7 @@ function crearFoto(foto) {
     img.setAttribute('alt', 'Foto no disponible');
     img.setAttribute('width', '400');
     img.setAttribute('height', '300');
+    enlace.setAttribute('href', 'articulo.html?id=' + foto.id);
     enlace.appendChild(img);
     parrafo1.appendChild(enlace);
     articleFoto.appendChild(parrafo1);
@@ -288,18 +314,84 @@ function borrarArticulos() {
 
 // Función para ejecutar la posible consulta inicial que pueda instanciarse en la url
 function consultaInicial() {
+    let url = location.href,
+        ultimoSlash = url.lastIndexOf('?'),
+        cadena, parametro;
 
+    if (ultimoSlash > -1) {
+        parametro = url.charAt(ultimoSlash+1);
+        cadena = url.substring(ultimoSlash+3, url.length);
+        if (parametro == 't') {
+            $('#buscar').value = corrigeCodificacion(cadena);
+        } else {
+            $('#vendedor').value = corrigeCodificacion(cadena);
+        }
+        consultaConParametros();
+    }
 }
 
 
 
-// Función para ejecutar una consulta al sevidor de articulos filtrando por parámetros
-function consultaConFiltros() {
+// Función que corrige los carácteres que no se pueden mostrar con la codificación UTF-8
+function corrigeCodificacion(frase) {
+	var frase = frase;
+
+	while (frase.search("%") > -1) {
+		frase = frase.replace("%20", " ");
+		frase = frase.replace("%C3%A1", "á");
+		frase = frase.replace("%C3%A9", "é");
+		frase = frase.replace("%C3%AD", "í");
+		frase = frase.replace("%C3%B3", "ó");
+		frase = frase.replace("%C3%BA", "ú");
+		frase = frase.replace("%C3%81", "Á");
+		frase = frase.replace("%C3%89", "É");
+		frase = frase.replace("%C3%8D", "Í");
+		frase = frase.replace("%C3%93", "Ó");
+		frase = frase.replace("%C3%9A", "Ú");
+		frase = frase.replace("%C3%B1", "ñ");
+		frase = frase.replace("%C3%91", "Ñ");
+	}
+
+	return frase;
+}
+
+
+
+// Función para realizar una consulta de artículos mediante filtrados
+function consultaConParametros() {
     let devuelve = '',
-        xhr = new XMLHttpRequest(),
         fd = new FormData($('#busquedaGold>form'));
 
-    if (fd.get('buscar') != ''  &&  fd.get('buscar') != '') {
-        devuelve
+    if (fd.get('buscar') != ''  &&  fd.get('buscar') != ' ') {
+        devuelve += '&t=' + fd.get('buscar');
     }
+
+    if (fd.get('vendedor') != ''  &&  fd.get('vendedor') != ' ') {
+        devuelve += '&v=' + fd.get('vendedor');
+    }
+
+    if (fd.get('categoria') != ''  &&  fd.get('categoria') != ' ') {
+        devuelve += '&c=' + fd.get('categoria');
+    }
+
+    // Si está logueado necesitar una cabecera de autorización...
+    if (sessionStorage.getItem('login')) {
+        if (fd.get('seguidos') != ''  &&  fd.get('seguidos') != ' ') {
+            devuelve += '&siguiendo';
+        }
+
+        if (fd.get('venta') != ''  &&  fd.get('venta') != ' ') {
+            devuelve += '&mios';
+        }
+    }
+
+    if (devuelve != '') {
+        devuelve = devuelve.substring(1, devuelve.length);
+    }
+
+    // Una vez tenemos los parametros ejecutamos petición...
+    paramConsulta = devuelve;
+    peticionPaginaArticulos();
+
+    return false;
 }
