@@ -31,9 +31,9 @@ function load() {
             ultimoSlash = url.lastIndexOf('/'),
             page = url.substring(ultimoSlash+1);
 
-        if (page.lastIndexOf('buscar.html') != -1) {
-            page = 'buscar.html'
-        }
+        // Averiguamos la página en la que estamos...
+        page = (page.lastIndexOf('buscar.html') != -1) ? 'buscar.html' : page;
+        page = (page.lastIndexOf('articulo.html') != -1) ? 'articulo.html' : page;
         page = (page == ''  ||  page == 'index.html#cabecera') ? 'index.html' : page;
 
         // Cargamos el contenido dinámico...
@@ -43,7 +43,7 @@ function load() {
         let paginas = $All('nav>ul>li>a>span:last-child');
 
         // Comprobamos si el usuario está logueado o no...
-        if (sessionStorage.getItem('login')) {
+        if (sessionStorage.getItem('usuario')) {
 
             if (page == 'login.html'  ||  page == 'registro.html') {
                 location.href = 'index.html';
@@ -118,6 +118,10 @@ function cargarInicio(pagina) {
             };
             break;
 
+        case 'articulo.html':
+            informacionArticulo();
+            break;
+
         default:
             console.log('Página desconocida...');
             break;
@@ -137,7 +141,7 @@ function peticionPaginaArticulos() {
     let xhr = new XMLHttpRequest(),
         url = 'api/articulos?',
         section = $('#articulos>div:nth-child(2)'),
-        fotos, ejecutar = true;
+        fotos;
     
     // Completamos la url para el servidor...
     if (paramConsulta != ''  &&  location.href.indexOf('buscar.html') != -1) {
@@ -145,48 +149,48 @@ function peticionPaginaArticulos() {
     } else if (location.href.indexOf('index.html') != -1) {
         url += 'pag=' + paginaActual + '&lpag=6';
     } else {
-        ejecutar = false;
+        return;
     }
 
-    if (ejecutar) {
+    // Abrimos la petición al servidor...
+    xhr.open('GET', url, true);
 
-        // Abrimos la petición al servidor...
-        xhr.open('GET', url, true);
+    // Se ejecuta con problemas en la petición ajenos al servidor...
+    xhr.onerror = function() {
+        console.warn('Se ha producido un error en la petición...');
+    };
 
-        // Se ejecuta con problemas en la petición ajenos al servidor...
-        xhr.onerror = function() {
-            console.warn('Se ha producido un error en la petición...');
-        };
+    // Si finaliza la conexión con éxito...
+    xhr.onload = function() {
+        fotos = JSON.parse(xhr.responseText);
+        borrarArticulos();
 
-        // Si finaliza la conexión con éxito...
-        xhr.onload = function() {
-            fotos = JSON.parse(xhr.responseText);
-            borrarArticulos();
+        if (fotos.FILAS.length > 0) {
 
-            if (fotos.FILAS.length > 0) {
+            // Actualizamos paginación...
+            totalPaginas = Math.ceil(fotos.TOTAL_COINCIDENCIAS / 6);
+            $$('#articulos>div:last-child>p', 2).innerHTML = ` ${paginaActual+1}/${totalPaginas} `;
 
-                // Actualizamos paginación...
-                totalPaginas = Math.ceil(fotos.TOTAL_COINCIDENCIAS / 6);
-                $$('#articulos>div:last-child>p', 2).innerHTML = ` ${paginaActual+1}/${totalPaginas} `;
-
-                // Creamos e incluimos artículos...
-                fotos.FILAS.forEach(function(foto) {
-                    section.appendChild(crearFoto(foto));
-                });
-            } else {
-                $('#articulos>div:nth-child(2)').innerHTML = `<p style="font-size: 1.5em;">No se encontraron resultados.</p>`;
-                $$('#articulos>div:last-child>p', 2).innerHTML = ` 0/0 `;
-            }
-        };
-
-        // Para pasar estos parámetros necesita cabecera con autorización...
-        if (paramConsulta.indexOf('mios') != -1  ||  paramConsulta.indexOf('siguiendo') != -1) {
-            xhr.setRequestHeader('Authorization', sessionStorage.getItem('login') + ':' + sessionStorage.getItem('token'));
+            // Creamos e incluimos artículos...
+            fotos.FILAS.forEach(function(foto) {
+                section.appendChild(crearFoto(foto));
+            });
+        } else {
+            $('#articulos>div:nth-child(2)').innerHTML = `<p style="font-size: 1.5em;">No se encontraron resultados.</p>`;
+            $$('#articulos>div:last-child>p', 2).innerHTML = ` 0/0 `;
         }
+    };
 
-        // Enviamos la petición al servidor...
-        xhr.send();
+    // Para pasar estos parámetros necesita cabecera con autorización...
+    if (paramConsulta.indexOf('mios') != -1  ||  paramConsulta.indexOf('siguiendo') != -1) {
+        let usu = JSON.parse(sessionStorage.get('usuario')),
+            autorizacion = usu.login + ':' + usu.token;
+
+        xhr.setRequestHeader('Authorization', autorizacion);
     }
+
+    // Enviamos la petición al servidor...
+    xhr.send();
 }
 
 
@@ -375,7 +379,7 @@ function consultaConParametros() {
     }
 
     // Si está logueado necesitar una cabecera de autorización...
-    if (sessionStorage.getItem('login')) {
+    if (sessionStorage.getItem('usuario')) {
         if (fd.get('seguidos') != ''  &&  fd.get('seguidos') != ' ') {
             devuelve += '&siguiendo';
         }
@@ -394,4 +398,95 @@ function consultaConParametros() {
     peticionPaginaArticulos();
 
     return false;
+}
+
+
+
+// Función para cargar la información de un artículo
+function informacionArticulo() {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/articulos/',
+        pagina = location.href,
+        parametro = pagina.substring(pagina.lastIndexOf('?') + 4);
+
+    // Si no hay parametro redirigimos a index...
+    if (parametro == '') {
+        location.href = 'index.html';
+    }
+
+    // Efectuamos la petición...
+    xhr.open('GET', url+parametro, true);
+    xhr.onload = function() {
+        let respuesta = JSON.parse(xhr.responseText);
+        console.log(respuesta);
+
+        // Se ejecuta si existe dicha foto
+        if (respuesta.FILAS.length > 0) {
+            let articulo = respuesta.FILAS[0],
+                sectionInfo = $('#infoArticulo');
+
+            sectionInfo.appendChild(crearCabeceraInfoArticulo(articulo));
+            sectionInfo.appendChild(crearCuerpoInfoVendedor(articulo));
+            sectionInfo.innerHTML += `<p>${articulo.descripcion}</p>`;
+        } else {
+            location.href = index.html;
+        }
+
+    };
+    
+    if (sessionStorage.getItem('usuario')) {
+        let usu = JSON.parse(sessionStorage.get('usuario')),
+            autorizacion = usu.login + ':' + usu.token;
+
+        xhr.setRequestHeader('Authorization', autorizacion);
+    }
+    xhr.send();
+}
+
+
+
+// Función para crear la cabecera de la información de una foto
+function crearCabeceraInfoArticulo(articulo) {
+    let div = document.createElement('div');
+
+    div.innerHTML = `<figure>
+                        <img src="fotos/articulos/${articulo.imagen}" alt="Foto no disponible" width="400">
+                        <p><i class="fas fa-arrow-left"></i> <span>  1 de ${articulo.nfotos}  </span> <i class="fas fa-arrow-right"></i></p>
+                    </figure>
+                    <article>
+                        <h5>${articulo.nombre}</h5>
+                        <p><i class="fas fa-coins"></i> ${articulo.precio} €</p>
+                        <p><i class="fas fa-eye"></i> ${articulo.veces_visto}</p>
+                        <p class="icon-user"> ${articulo.nsiguiendo}</p>
+                        <p class="icon-comment"> <a href="#grupoPreguntas">${articulo.npreguntas}</a></p>`;
+
+    if (sessionStorage.getItem('usuario')) {
+        if (articulo.estoy_siguiendo == '0') {
+            div.innerHTML += `<p>
+                                <button class="boton">Seguir</button>
+                            </p>`;
+        } else {
+            div.innerHTML += `<p>
+                                <button class="boton">Dejar de seguir</button>
+                            </p>`;
+        }
+    }
+                        
+    div.innerHTML += `</article>`;
+
+    return div;
+}
+
+
+
+// Función para crear la información de un vendedor que vende un determinado producto
+function crearCuerpoInfoVendedor(articulo) {
+    let div = document.createElement('div');
+
+    div.innerHTML += `<article>
+                        <h5><img src="fotos/usuarios/${articulo.foto_vendedor}" alt="Foto no disponible" width="200"></h5>
+                        <p>Vendedor: <a href="buscar.html?v=${articulo.vendedor}">${articulo.vendedor}</a></p>
+                    </article>`;
+
+    return div;
 }

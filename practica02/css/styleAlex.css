@@ -260,17 +260,17 @@ footer {
             }
 
             #articulos>div:nth-child(2)>article>div>p:nth-child(1),
-            #infoArticulo>div>article>p:nth-child(3) {
+            #infoArticulo>div>article>p:nth-child(2) {
                 color: #b3b300;
             }
 
             #articulos>div:nth-child(2)>article>div>p:nth-child(2),
-            #infoArticulo>div>article>p:nth-child(4) {
+            #infoArticulo>div>article>p:nth-child(3) {
                 color: #b30000;
             }
 
             #articulos>div:nth-child(2)>article>div>p:nth-child(3),
-            #infoArticulo>div>article>p:nth-child(5) {
+            #infoArticulo>div>article>p:nth-child(4) {
                 color: #00b300;
             }
 
@@ -296,6 +296,12 @@ footer {
     #articulos>div:nth-child(3)>p:hover {
         cursor: pointer;
         color: grey;
+    }
+
+    #infoArticulo>div>figure>p>i:first-child:hover,
+    #infoArticulo>div>figure>p>i:last-child:hover {
+        cursor: pointer;
+        color: var(--azulOscuro);
     }
 
     #articulos>div:nth-child(3)>p:nth-child(3):hover {
@@ -382,22 +388,30 @@ footer {
             margin-top: 5px;
         }
 
-        #infoArticulo>div>article>p:nth-child(6) {
+        #infoArticulo>div>article>p:nth-child(5) {
             color: #b31a91;
         }
 
-        #infoArticulo>div>article>p:nth-child(2)>a,    
-        #infoArticulo>div>article>p:nth-child(6)>a {
+        #infoArticulo>div:nth-child(3)>article>p {
+            color: black;
+        }
+    
+        #infoArticulo>div>article>p:nth-child(5)>a,
+        #infoArticulo>div:nth-child(3)>article>p>a {
                 color: #b31a91;
             }
 
-            #infoArticulo>div>article>p:nth-child(2)>a,
-            #infoArticulo>div>article>p:nth-child(6)>a {
+            #infoArticulo>div:nth-child(3)>article>p {
+                text-align: center;
+            }
+
+            #infoArticulo>div>article>p:nth-child(5)>a,
+            #infoArticulo>div:nth-child(3)>article>p>a {
                 text-decoration: none;
             }
 
             #infoArticulo>div>article>p:nth-child(2)>a:hover,
-            #infoArticulo>div>article>p:nth-child(6)>a:hover {
+            #infoArticulo>div>article>p:nth-child(5)>a:hover {
                 text-decoration: underline;
             }
 
