@@ -56,7 +56,7 @@ body>main>section>section#registrar>div{
     color:#fff
 }
 
-[name="login"]>input, [name="registro"]>input{
+[name="log"]>input, [name="registro"]>input{
     width: 100%;
     height: 100%;
     padding: 10px;
@@ -70,19 +70,65 @@ body>main>section>section#registrar>div{
     border-bottom: 2px solid #bebed2;
 }
 
-[name="login"]>input:focus, [name="registro"]>input:focus{
+[name="log"]>input:focus, [name="registro"]>input:focus{
     border-bottom: 3px solid #058dac;
 }
 
-[name="login"]>label>b, [name="registro"]>label>b{
+[name="log"]>label>b, [name="registro"]>label>b{
     padding: 10px;
 }
 
-form[name="login"]>input:hover, form[name="registro"]>input:hover, form[name="nuevo"]>input:hover{
+form[name="log"]>input:hover, form[name="registro"]>input:hover, form[name="nuevo"]>input:hover{
     transition: all .3s;
     color: white;
     box-shadow: inset 0 0 0 50px rgb(255, 211, 173);
 }
+
+#capa-fondo{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    background-color: rgba(255,255,255,.8);
+}
+
+    #capa-fondo > article{
+        background-color: #fff;
+        border: 2px solid #000;
+        text-align: center;
+        width: 20em;
+        position: absolute;
+        top: 15em;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+        #capa-fondo > article > h2{
+            background-color: #dfeaff;
+            margin: 0;
+            padding: .5em;
+        }
+
+            #capa-fondo>article>p{
+                padding: 5%;
+            }
+
+                #capa-fondo > article > button{
+                    margin: .5em;
+                    font-size:1em;
+                    background-color: #ccc;
+                    /*padding: .5em 2em;*/
+                    cursor: pointer;
+
+                    padding: 5px;
+                    font-weight: 700;
+                    color: white;
+                    background-color: #1d1c1c;
+                    display: inline-block;
+                    margin: 10px;
+                }
 
 .upload-btn-wrapper {
     position: relative;
