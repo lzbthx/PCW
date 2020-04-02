@@ -118,26 +118,36 @@ function hacerRegistro(frm){
 	fetch(url, {method:'POST',body:fd}).then(function(respuesta){
 		if(respuesta.ok){
 			respuesta.json().then(function(datos){
+				console.log("Datos del método hacerRegistro(): \n");
 				console.log(datos);
-				//sessionStorage['usuario'] = JSON.stringify(datos);
-
-				//Texto del mensaje
-				let html = '';
-
-				html += '<article>';
-				html += '<h2>Hacer Login </h2>';
-				html += '<p>El usuario ' + datos.login + ' se ha logueado correctamente</p>';
-				//html += '<p>La operación de login se ha realizado correctamente</p>';
-				html += '<footer><button onclick="cerrarMensajeModal();>Aceptar</button></footer>';
-				html += '</article>';
-
-				mensajeModal(html);
-		});
+				//Limpiamos formulario
+				document.getElementById('myreg').reset();
+				mensajeRegistro(datos.LOGIN);
+			});
 		}else
 			console.log('Error en la petición fetch');
 	});
 
 	return false;
+}
+
+function mensajeRegistro(datos){
+	let titulo, texto, div, html;
+
+    titulo = 'REGISTRO';
+    texto = 'El usuario <b>' + datos + '</b> se ha registrado correctamente. ';
+
+    div = document.createElement('div');
+    div.setAttribute('id', 'capa-fondo');
+	
+    html = '<article>';
+    html += '<h2>' + titulo + '</h2>';
+    html += '<p>' + texto + '</p>';
+    html += '<button onclick="window.location.href=\'login.html\';">Aceptar</button>';
+    html += '</article>';
+
+    div.innerHTML = html;
+    document.body.appendChild(div);
 }
 
 function compruebaUsuario(value){
@@ -148,12 +158,12 @@ function compruebaUsuario(value){
 		if(respuesta.ok){
 			respuesta.json().then(function(datos){
 				//Comprobamos el estado del usuario por consola
+				console.log("Datos del método compruebaUsuario(): \n");
 				console.log(datos);
 				if(datos.DISPONIBLE == false){
 					console.log('Usuario no disponible.');
 	
-					html = '<p class="user"> El nombre de usuario no se encuentra disponible. </p>';
-					//document.getElementById("mensaje").innerHTML = "";
+					html = '<p class="user"> (*) El nombre de usuario no se encuentra disponible. </p>';
 					document.querySelector('#mensaje').innerHTML = html;
 					document.getElementById('mensaje').style.display = "block";
 					document.getElementById('mensaje').style.color = 'red';
@@ -165,11 +175,30 @@ function compruebaUsuario(value){
 				}
 			});
 		}else{
-			// if(response.status!=200)       
-			console.log('Error(' + response.status + '): ' + response.statusText);      
+			console.log('Error(' + respuesta.status + '): ' + respuesta.statusText);      
 			return;    
 		}
 	});
+}
+
+function compruebaPassword(){
+	let pwd = document.getElementById('pass').value,
+		pwd2 = document.getElementById('pass2').value,
+		html;
+
+	if(pwd != null && pwd2 != null && pwd != '' && pwd2 != ''){
+		console.log('Contraseña: ' + pwd + '\n' + "Repite contraseña: " + pwd2);
+		if(pwd != pwd2){
+			html = '<p class="user"> (*) Las contraseñas no coinciden </p>';
+			document.querySelector('#mensaje2').innerHTML = html;
+			document.getElementById('mensaje2').style.display = "block";
+			document.getElementById('mensaje2').style.color = 'red';
+		}else{
+			html = '';
+			document.querySelector('#mensaje2').innerHTML = html;
+			console.log('Contraseñas correctas');
+		}
+	}
 }
 
 function logout(){

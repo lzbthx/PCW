@@ -48,16 +48,18 @@
                 <div>
                     <form name="registro" id="myreg" onsubmit="return hacerRegistro(this);">
                         <label for="login"><b>Nombre de usuario: </b></label>
-                        <input type="text" id="login" placeholder="Introduce tu usuario" pattern="^[a-zA-Z][A-Za-z0-9]{4,20}$" 
+                        <input type="text" name="login" id="login" placeholder="Introduce tu usuario" pattern="^[a-zA-Z][A-Za-z0-9]{4,20}$" 
                         maxlength="20" autofocus required onblur="compruebaUsuario(this.value);">
                         
                         <div id="mensaje"></div>
 
                         <label for="pass"><b>Contraseña: </b></label>
-                        <input type="password" name="pwd" id="pass" placeholder="Introduce tu contraseña" pattern="^[A-Za-z0-9_-]{6,20}$" required>
+                        <input type="password" name="pwd" id="pass" placeholder="Introduce tu contraseña" pattern="^[A-Za-z0-9_-]{6,20}$" required onblur="compruebaPassword();">
                         
                         <label for="pass2"><b>Repite la contraseña: </b></label>
-                        <input type="password" name="pwd2" id="pass2" placeholder="Repite la contraseña">
+                        <input type="password" name="pwd2" id="pass2" placeholder="Repite la contraseña" pattern="^[A-Za-z0-9_-]{6,20}$" required onblur="compruebaPassword();">
+
+                        <div id="mensaje2"></div>
 
                         <label for="nombre"><b>Nombre completo: </b></label>
                         <input type="nombre" name="nombre" id="nombre" placeholder="Introduce tu nombre">
