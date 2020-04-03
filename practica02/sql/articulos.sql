@@ -40,7 +40,7 @@ CREATE TABLE `articulo` (
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(300) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `veces_visto` int(11) NOT NULL DEFAULT '0',
   `id_categoria` int(11) NOT NULL,
   `vendedor` varchar(20) NOT NULL

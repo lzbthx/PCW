@@ -1,7 +1,11 @@
 /////////////   VARIABLES GLOBALES  /////////////
 var paginaActual = 0,
     totalPaginas,
-    paramConsulta = '';
+    paramConsulta = '',
+    numFotoActual = 1,
+    numTotalFotos,
+    idArticulo,
+    totalFotos;
 
 
 
@@ -163,6 +167,7 @@ function peticionPaginaArticulos() {
     // Si finaliza la conexión con éxito...
     xhr.onload = function() {
         fotos = JSON.parse(xhr.responseText);
+        console.log(fotos);
         borrarArticulos();
 
         if (fotos.FILAS.length > 0) {
@@ -378,6 +383,14 @@ function consultaConParametros() {
         devuelve += '&c=' + fd.get('categoria');
     }
 
+    if (fd.get('desde') != ''  &&  fd.get('desde') != ' ') {
+        devuelve += '&pd=' + fd.get('desde');
+    }
+
+    if (fd.get('hasta') != ''  &&  fd.get('hasta') != ' ') {
+        devuelve += '&ph=' + fd.get('hasta');
+    }
+
     // Si está logueado necesitar una cabecera de autorización...
     if (sessionStorage.getItem('usuario')) {
         if (fd.get('seguidos') != ''  &&  fd.get('seguidos') != ' ') {
@@ -406,28 +419,36 @@ function consultaConParametros() {
 function informacionArticulo() {
     let xhr = new XMLHttpRequest(),
         url = 'api/articulos/',
-        pagina = location.href,
-        parametro = pagina.substring(pagina.lastIndexOf('?') + 4);
+        pagina = location.href;
+    
+    idArticulo = pagina.substring(pagina.lastIndexOf('?') + 4);
 
     // Si no hay parametro redirigimos a index...
-    if (parametro == '') {
+    if (idArticulo == ''  ||  location.search == '') {
         location.href = 'index.html';
     }
 
     // Efectuamos la petición...
-    xhr.open('GET', url+parametro, true);
+    xhr.open('GET', url+idArticulo, true);
     xhr.onload = function() {
         let respuesta = JSON.parse(xhr.responseText);
-        console.log(respuesta);
 
         // Se ejecuta si existe dicha foto
         if (respuesta.FILAS.length > 0) {
             let articulo = respuesta.FILAS[0],
                 sectionInfo = $('#infoArticulo');
+            console.log(articulo);
+            numTotalFotos = articulo.nfotos;
+            idArticulo = articulo.id;
 
+            // Obtenemos todas las fotos del artículo...
+            getTotalFotosArticulo();
+
+            // Modificamos la página...
             sectionInfo.appendChild(crearCabeceraInfoArticulo(articulo));
             sectionInfo.appendChild(crearCuerpoInfoVendedor(articulo));
             sectionInfo.innerHTML += `<p>${articulo.descripcion}</p>`;
+            cambiarFoto();
         } else {
             location.href = index.html;
         }
@@ -447,13 +468,11 @@ function informacionArticulo() {
 
 // Función para crear la cabecera de la información de una foto
 function crearCabeceraInfoArticulo(articulo) {
-    let div = document.createElement('div');
+    let div = document.createElement('div'),
+        cabeceraFoto = cabeceraFotoArticulo(articulo.imagen);
 
-    div.innerHTML = `<figure>
-                        <img src="fotos/articulos/${articulo.imagen}" alt="Foto no disponible" width="400">
-                        <p><i class="fas fa-arrow-left"></i> <span>  1 de ${articulo.nfotos}  </span> <i class="fas fa-arrow-right"></i></p>
-                    </figure>
-                    <article>
+    div.innerHTML = `<figure>${cabeceraFoto.innerHTML}</figure>`;
+    div.innerHTML += `<article>
                         <h5>${articulo.nombre}</h5>
                         <p><i class="fas fa-coins"></i> ${articulo.precio} €</p>
                         <p><i class="fas fa-eye"></i> ${articulo.veces_visto}</p>
@@ -479,6 +498,18 @@ function crearCabeceraInfoArticulo(articulo) {
 
 
 
+// Función para crear la foto de información del artículo
+function cabeceraFotoArticulo(imagen) {
+    let figure = document.createElement('figure');
+
+    figure.innerHTML = `<img src="fotos/articulos/${imagen}" alt="Foto no disponible" width="400">
+        <p><i class="fas fa-arrow-left"></i> <span>  1 de ${numTotalFotos}  </span> <i class="fas fa-arrow-right"></i></p>`;
+
+    return figure;
+}
+
+
+
 // Función para crear la información de un vendedor que vende un determinado producto
 function crearCuerpoInfoVendedor(articulo) {
     let div = document.createElement('div');
@@ -489,4 +520,51 @@ function crearCuerpoInfoVendedor(articulo) {
                     </article>`;
 
     return div;
+}
+
+
+
+// Función para cambiar de foto al mostrar la información de un artículo
+function cambiarFoto() {
+    let botonera = $All('#infoArticulo>div>figure>p>i');
+    
+    botonera[0].onclick = function() {
+        if (numFotoActual > 1) {
+            numFotoActual--;
+            pasaSiguienteFoto();
+        }
+    };
+
+    botonera[1].onclick = function() {
+        if (numFotoActual < numTotalFotos) {
+            numFotoActual++;
+            pasaSiguienteFoto();
+        }
+    };
+}
+
+
+
+// Función para realizar la petición al servidor de la nueva foto del artículo
+function getTotalFotosArticulo() {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/articulos/' + idArticulo + '/fotos';
+
+    xhr.open('GET', url, true);
+    xhr.onload = function() {
+        totalFotos = JSON.parse(xhr.responseText).FILAS;
+    };
+    xhr.send();
+}
+
+
+
+// Función para pasar a la siguiente foto indicada
+function pasaSiguienteFoto() {
+    let imagen   = $('#infoArticulo>div>figure>img'),
+        botonera = $('#infoArticulo>div>figure>p>span'),
+        archivo  = totalFotos[numFotoActual-1].fichero;
+
+    imagen.setAttribute('src', 'fotos/articulos/'+archivo);
+    botonera.innerHTML = `  ${numFotoActual} de ${numTotalFotos}  `;
 }
