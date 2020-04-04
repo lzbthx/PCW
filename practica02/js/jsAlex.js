@@ -5,7 +5,9 @@ var paginaActual = 0,
     numFotoActual = 1,
     numTotalFotos,
     idArticulo,
-    totalFotos;
+    totalFotos,
+    nombreVendedor,
+    botonesResponder;
 
 
 
@@ -167,7 +169,6 @@ function peticionPaginaArticulos() {
     // Si finaliza la conexión con éxito...
     xhr.onload = function() {
         fotos = JSON.parse(xhr.responseText);
-        console.log(fotos);
         borrarArticulos();
 
         if (fotos.FILAS.length > 0) {
@@ -437,12 +438,14 @@ function informacionArticulo() {
         if (respuesta.FILAS.length > 0) {
             let articulo = respuesta.FILAS[0],
                 sectionInfo = $('#infoArticulo');
-            console.log(articulo);
             numTotalFotos = articulo.nfotos;
             idArticulo = articulo.id;
 
             // Obtenemos todas las fotos del artículo...
             getTotalFotosArticulo();
+
+            // Obtenemos todas las preguntas del artículo...
+            getPreguntasArticulo();
 
             // Modificamos la página...
             sectionInfo.appendChild(crearCabeceraInfoArticulo(articulo));
@@ -518,6 +521,7 @@ function crearCuerpoInfoVendedor(articulo) {
                         <h5><img src="fotos/usuarios/${articulo.foto_vendedor}" alt="Foto no disponible" width="200"></h5>
                         <p>Vendedor: <a href="buscar.html?v=${articulo.vendedor}">${articulo.vendedor}</a></p>
                     </article>`;
+    nombreVendedor = articulo.vendedor;
 
     return div;
 }
@@ -567,4 +571,147 @@ function pasaSiguienteFoto() {
 
     imagen.setAttribute('src', 'fotos/articulos/'+archivo);
     botonera.innerHTML = `  ${numFotoActual} de ${numTotalFotos}  `;
+}
+
+
+
+// Función para obtener todas las preguntas de un artículo
+function getPreguntasArticulo() {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/articulos/' + idArticulo + '/preguntas';
+
+    xhr.open('GET', url, true);
+    xhr.onload = function() {
+        let preguntas = JSON.parse(xhr.responseText).FILAS,
+            section   = $('#grupoPreguntas');
+        console.log(preguntas);
+        if (preguntas.length > 0) {
+            botonesResponder = new Array();
+
+            // Creamos y posicionamos preguntas en la página
+            preguntas.forEach(function(pregunta) {
+                section.appendChild(crearPreguntaArticulo(pregunta));
+            });
+
+            // Si hay botones de respuestas los activamos
+            botonesResponder.forEach(function(boton) {
+                boton[0].onclick = function() {
+                    mostrarAreaRespuesta(boton[1]);
+                };
+            });
+        } else {
+            $('#grupoPreguntas').innerHTML += `<div><p style="font-size: 1.2em; padding-top: 35px; text-align: center; font-weight: initial;">Este artículo no tiene preguntas.</p><div>`;
+        }
+    };
+
+    if (sessionStorage.getItem('usuario')) {
+        let usu = JSON.parse(sessionStorage.get('usuario')),
+            autorizacion = usu.login + ':' + usu.token;
+
+        xhr.setRequestHeader('Authorization', autorizacion);
+    }
+    xhr.send();
+}
+
+
+
+// Función para crear una pregunta en la zona de preguntas de una artículo
+function crearPreguntaArticulo(pregunta) {
+    let div = document.createElement('div'),
+        fecha = getFormatoFecha(pregunta.fecha_hora),
+        usu = undefined;
+
+    div.setAttribute('id', 'pregunta' + pregunta.id);
+    if (sessionStorage.getItem('usuario')) {
+        usu = JSON.parse(sessionStorage.getItem('usuario'));
+    }
+
+    div.innerHTML = `<p class="icon-user">${pregunta.login} <time datetime="${pregunta.fecha_hora}">${fecha}</time></p>
+    <p>${pregunta.pregunta}</p>`;
+
+    if (pregunta.respuesta != null) {
+        div.innerHTML += `<div>
+                            <p class="icon-user">${nombreVendedor}</p>
+                            <p>${pregunta.respuesta}</p>
+                        </div>`;
+    } else if (usu != undefined  &&  usu.login == nombreVendedor) {
+        
+    }
+
+    let span = document.createElement('span'),
+        boton = document.createElement('button');
+    
+        boton.setAttribute('class', 'boton');
+        boton.textContent = 'Responder';
+        span.appendChild(boton);
+        botonesResponder.push(new Array(boton, pregunta.id));
+        div.appendChild(span);
+    
+    return div;
+}
+
+
+
+// Función para obtener la hora
+function getFormatoFecha(objFecha) {
+    let devuelve  = '',
+        fechaHora = objFecha.split(' '),
+        fecha     = fechaHora[0].split('-'),
+        hora      = fechaHora[1];
+
+    let mes = fecha[1];
+    switch (mes) {
+        case '01':
+            mes = 'enero';
+            break;
+        case '02':
+            mes = 'febrero';
+            break;
+        case '03':
+            mes = 'marzo';
+            break;
+        case '04':
+            mes = 'abril';
+            break;
+        case '05':
+            mes = 'mayo';
+            break;
+        case '06':
+            mes = 'junio';
+            break;
+        case '07':
+            mes = 'julio';
+            break;
+        case '08':
+            mes = 'agosto';
+            break;
+        case '09':
+            mes = 'septiembre';
+            break;
+        case '10':
+            mes = 'octubre';
+            break;
+        case '11':
+            mes = 'noviembre';
+            break;
+        case '12':
+            mes = 'diciembre';
+            break;
+    }
+    devuelve = fecha[2] + '-' + mes + '-' + fecha[0];
+    devuelve += ', a las ' + hora.substring(0, 5);
+
+    return devuelve;
+}
+
+
+
+// Función para mostrar el área de respuesta a una pregunta
+function mostrarAreaRespuesta(id) {
+    let preguntaId = '#pregunta' + id,
+        textarea = document.createElement('textarea'),
+        boton    = $(preguntaId + '>span'),
+        div      = $(preguntaId);
+
+    div.removeChild(boton);
 }
