@@ -169,7 +169,7 @@ function peticionPaginaArticulos() {
     // Si finaliza la conexión con éxito...
     xhr.onload = function() {
         fotos = JSON.parse(xhr.responseText);
-        borrarArticulos();
+        borrarHijos('#articulos>div:nth-child(2)');
 
         if (fotos.FILAS.length > 0) {
 
@@ -276,7 +276,7 @@ function cambioPagina() {
     botonera[0].onclick = function() {
         if (paginaActual > 0) {
             paginaActual = 0;
-            borrarArticulos();
+            borrarHijos('#articulos>div:nth-child(2)');
             peticionPaginaArticulos();
         }
     };
@@ -285,7 +285,7 @@ function cambioPagina() {
     botonera[1].onclick = function() {
         if (paginaActual > 0) {
             paginaActual--;
-            borrarArticulos();
+            borrarHijos('#articulos>div:nth-child(2)');
             peticionPaginaArticulos();
         }
     };
@@ -294,7 +294,7 @@ function cambioPagina() {
     botonera[3].onclick = function() {
         if (paginaActual < totalPaginas-1) {
             paginaActual++;
-            borrarArticulos();
+            borrarHijos('#articulos>div:nth-child(2)');
             peticionPaginaArticulos();
         }
     };
@@ -303,7 +303,7 @@ function cambioPagina() {
     botonera[4].onclick = function() {
         if (paginaActual < totalPaginas-1) {
             paginaActual = totalPaginas-1;
-            borrarArticulos();
+            borrarHijos('#articulos>div:nth-child(2)');
             peticionPaginaArticulos();
         }
     };
@@ -312,8 +312,8 @@ function cambioPagina() {
 
 
 // Función para limpiar todos los artículos de una página para añadir nuevos
-function borrarArticulos() {
-    let lista = $('#articulos>div:nth-child(2)');
+function borrarHijos(elemento) {
+    let lista = $(elemento);
 
     while (lista.hasChildNodes()) {
         lista.removeChild(lista.firstChild);
@@ -635,17 +635,15 @@ function crearPreguntaArticulo(pregunta) {
                             <p>${pregunta.respuesta}</p>
                         </div>`;
     } else if (usu != undefined  &&  usu.login == nombreVendedor) {
-        
-    }
-
-    let span = document.createElement('span'),
-        boton = document.createElement('button');
+        let span = document.createElement('span'),
+            boton = document.createElement('button');
     
         boton.setAttribute('class', 'boton');
         boton.textContent = 'Responder';
         span.appendChild(boton);
         botonesResponder.push(new Array(boton, pregunta.id));
         div.appendChild(span);
+    }
     
     return div;
 }
@@ -711,7 +709,47 @@ function mostrarAreaRespuesta(id) {
     let preguntaId = '#pregunta' + id,
         textarea = document.createElement('textarea'),
         boton    = $(preguntaId + '>span'),
-        div      = $(preguntaId);
+        div      = $(preguntaId),
+        newBoton = document.createElement('button');
 
-    div.removeChild(boton);
+    textarea.setAttribute('style', 'width:100%; height:70px');
+    newBoton.setAttribute('class', 'boton');
+    newBoton.textContent = 'Enviar';
+    div.insertBefore(textarea, boton);
+    boton.replaceChild(newBoton, boton.firstChild);
+
+    newBoton.onclick = function() {
+        let respuesta = textarea.value;
+        
+        if (respuesta != '') {
+            enviarRespuestaPregunta(id, respuesta);
+        }
+    };
+}
+
+
+
+// Función para enviar la respuesta al sevidor de una pregunta y actualizar la sección
+function enviarRespuestaPregunta(id, respuesta) {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/preguntas/' + id + '/respuesta',
+        fd = new FormData(),
+        usu = JSON.parse(sessionStorage.getItem('usuario')),
+        autorizacion = usu.login + ':' + usu.token;
+
+    fd.append('texto', respuesta);
+    xhr.open('POST', url, true);
+    xhr.onload = function() {
+        let objeto = JSON.parse(xhr.responseText);
+        
+        if (objeto.RESULTADO == 'OK') {
+            borrarHijos('#grupoPreguntas');
+            $('#grupoPreguntas').innerHTML = `<h5>Preguntas sobre el artículo</h5>`;
+            getPreguntasArticulo();
+        } else {
+            console.error('No se ha podido guardar la respuesta');
+        }
+    };
+    xhr.setRequestHeader('Authorization', autorizacion);
+    xhr.send(fd);
 }
