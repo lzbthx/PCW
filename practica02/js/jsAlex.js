@@ -118,6 +118,10 @@ function cargarInicio(pagina) {
             break;
 
         case 'buscar.html':
+            if (sessionStorage.getItem('usuario')) {
+                $('#seguidos').parentNode.style.display = 'inline-block';
+                $('#venta').parentNode.style.display = 'inline-block';
+            }
             consultaInicial();
             $('#busquedaGold>form').onsubmit = function() {
                 return consultaConParametros();
@@ -189,7 +193,7 @@ function peticionPaginaArticulos() {
 
     // Para pasar estos parámetros necesita cabecera con autorización...
     if (paramConsulta.indexOf('mios') != -1  ||  paramConsulta.indexOf('siguiendo') != -1) {
-        let usu = JSON.parse(sessionStorage.get('usuario')),
+        let usu = JSON.parse(sessionStorage.getItem('usuario')),
             autorizacion = usu.login + ':' + usu.token;
 
         xhr.setRequestHeader('Authorization', autorizacion);
@@ -392,15 +396,9 @@ function consultaConParametros() {
         devuelve += '&ph=' + fd.get('hasta');
     }
 
-    // Si está logueado necesitar una cabecera de autorización...
     if (sessionStorage.getItem('usuario')) {
-        if (fd.get('seguidos') != ''  &&  fd.get('seguidos') != ' ') {
-            devuelve += '&siguiendo';
-        }
-
-        if (fd.get('venta') != ''  &&  fd.get('venta') != ' ') {
-            devuelve += '&mios';
-        }
+        devuelve += (fd.get('seguidos')) ? '&siguiendo' : '';
+        devuelve += (fd.get('venta')) ? '&mios' : '';
     }
 
     if (devuelve != '') {
@@ -459,7 +457,7 @@ function informacionArticulo() {
     };
     
     if (sessionStorage.getItem('usuario')) {
-        let usu = JSON.parse(sessionStorage.get('usuario')),
+        let usu = JSON.parse(sessionStorage.getItem('usuario')),
             autorizacion = usu.login + ':' + usu.token;
 
         xhr.setRequestHeader('Authorization', autorizacion);
@@ -593,19 +591,15 @@ function getPreguntasArticulo() {
                 section.appendChild(crearPreguntaArticulo(pregunta));
             });
 
-            // Si hay botones de respuestas los activamos
-            botonesResponder.forEach(function(boton) {
-                boton[0].onclick = function() {
-                    mostrarAreaRespuesta(boton[1]);
-                };
-            });
+            // Escuchamos los eventos de la página
+            eventosPaginaArticulo();
         } else {
             $('#grupoPreguntas').innerHTML += `<div><p style="font-size: 1.2em; padding-top: 35px; text-align: center; font-weight: initial;">Este artículo no tiene preguntas.</p><div>`;
         }
     };
 
     if (sessionStorage.getItem('usuario')) {
-        let usu = JSON.parse(sessionStorage.get('usuario')),
+        let usu = JSON.parse(sessionStorage.getItem('usuario')),
             autorizacion = usu.login + ':' + usu.token;
 
         xhr.setRequestHeader('Authorization', autorizacion);
@@ -704,6 +698,26 @@ function getFormatoFecha(objFecha) {
 
 
 
+// Función para ejecutar los eventos de la página artículo
+function eventosPaginaArticulo() {
+
+    // Si hay botones de respuestas los activamos
+    botonesResponder.forEach(function(boton) {
+        boton[0].onclick = function() {
+            mostrarAreaRespuesta(boton[1]);
+        };
+    });
+
+    // Podemos seguir y dejar de seguir el artículo
+    let boton = $('#infoArticulo>div>p>button');
+    boton.onclick = function() {
+        let seguir = (boton.textContent == 'Seguir') ? true : false;
+        peticionSeguimientoArticulo(seguir);
+    }
+}
+
+
+
 // Función para mostrar el área de respuesta a una pregunta
 function mostrarAreaRespuesta(id) {
     let preguntaId = '#pregunta' + id,
@@ -743,6 +757,8 @@ function enviarRespuestaPregunta(id, respuesta) {
         let objeto = JSON.parse(xhr.responseText);
         
         if (objeto.RESULTADO == 'OK') {
+
+            // Actualizamos la sección de preguntas
             borrarHijos('#grupoPreguntas');
             $('#grupoPreguntas').innerHTML = `<h5>Preguntas sobre el artículo</h5>`;
             getPreguntasArticulo();
@@ -752,4 +768,35 @@ function enviarRespuestaPregunta(id, respuesta) {
     };
     xhr.setRequestHeader('Authorization', autorizacion);
     xhr.send(fd);
+}
+
+
+
+// Función para realizar la petición para seguir o dejar de seguir un artículo
+function peticionSeguimientoArticulo(seguir) {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/articulos/' + idArticulo + '/seguir/' + seguir,
+        usu = JSON.parse(sessionStorage.getItem('usuario')),
+        autorizacion = usu.login + ':' + usu.token;
+    
+    xhr.open('POST', url, true);
+    xhr.onload = function() {
+        let respuesta = JSON.parse(xhr.responseText);
+        if (respuesta.RESULTADO == 'OK') {
+            let parrafo    = $('#infoArticulo>div>article>p:nth-child(4)'),
+                seguidores = parseInt(parrafo.textContent),
+                boton      = $('#infoArticulo>div>p>button');
+
+            // Cambiamos mensaje del botón y número de seguidores...
+            boton.textContent = (seguir) ? 'Dejar de seguir' : 'Seguir';
+            parrafo.textContent = ' ';
+            parrafo.textContent += (seguir) ? (++seguidores) : (--seguidores);
+
+            eventosPaginaArticulo();
+        } else {
+            console.log(respuesta.DESCRIPCION);
+        }
+    };
+    xhr.setRequestHeader('Authorization', autorizacion);
+    xhr.send();
 }

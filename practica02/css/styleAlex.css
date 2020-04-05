@@ -500,6 +500,54 @@ footer {
                 }
 
 
+
+/*Estilos adicionales*/
+
+.mensajeModal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255,255,255,.8);
+}
+
+    .mensajeModal > article{
+        background-color: #fff;
+        border: 2px solid #000;
+        text-align: center;
+        width: 20em;
+        position: absolute;
+        top: 15em;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+        .mensajeModal > article > h2{
+            background-color: #dfeaff;
+            margin: 0;
+            padding: .5em;
+        }
+
+            .mensajeModal>article>p{
+                padding: 5%;
+            }
+
+                .mensajeModal > article > button{
+                    margin: .5em;
+                    font-size:1em;
+                    background-color: #ccc;
+                    /*padding: .5em 2em;*/
+                    cursor: pointer;
+
+                    padding: 5px;
+                    font-weight: 700;
+                    color: white;
+                    background-color: #1d1c1c;
+                    display: inline-block;
+                    margin: 10px;
+                }
+
                 
 
 
