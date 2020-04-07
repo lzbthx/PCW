@@ -6,8 +6,10 @@ var paginaActual = 0,
     numTotalFotos,
     idArticulo,
     totalFotos,
-    nombreVendedor,
-    botonesResponder;
+    loginVendedor,
+    botonesResponder,
+    descripcionArticulo,
+    precioArticulo;
 
 
 
@@ -436,6 +438,7 @@ function informacionArticulo() {
         if (respuesta.FILAS.length > 0) {
             let articulo = respuesta.FILAS[0],
                 sectionInfo = $('#infoArticulo');
+
             numTotalFotos = articulo.nfotos;
             idArticulo = articulo.id;
 
@@ -446,9 +449,18 @@ function informacionArticulo() {
             getPreguntasArticulo();
 
             // Modificamos la página...
-            sectionInfo.appendChild(crearCabeceraInfoArticulo(articulo));
-            sectionInfo.appendChild(crearCuerpoInfoVendedor(articulo));
+            //sectionInfo.appendChild(crearCabeceraInfoArticulo(articulo));
+            //sectionInfo.appendChild(crearCuerpoInfoVendedor(articulo));
+            let divCuerpo   = crearCuerpoInfoVendedor(articulo),
+                divCabecera = crearCabeceraInfoArticulo(articulo);
+
+            sectionInfo.appendChild(divCabecera);
+            sectionInfo.appendChild(divCuerpo);
             sectionInfo.innerHTML += `<p>${articulo.descripcion}</p>`;
+            descripcionArticulo = articulo.descripcion;
+            precioArticulo = articulo.precio;
+
+            // Evento para cambiar de foto
             cambiarFoto();
         } else {
             location.href = index.html;
@@ -481,13 +493,24 @@ function crearCabeceraInfoArticulo(articulo) {
                         <p class="icon-comment"> <a href="#grupoPreguntas">${articulo.npreguntas}</a></p>`;
 
     if (sessionStorage.getItem('usuario')) {
+        let usu = JSON.parse(sessionStorage.getItem('usuario'));
+
         if (articulo.estoy_siguiendo == '0') {
             div.innerHTML += `<p>
                                 <button class="boton">Seguir</button>
                             </p>`;
         } else {
             div.innerHTML += `<p>
-                                <button class="boton">Dejar de seguir</button>
+                                <button class="boton">Siguiendo</button>
+                            </p>`;
+        }
+
+        if (usu.login == loginVendedor) {
+            div.innerHTML += `<p>
+                                <button style="margin-top: 15px;" class="boton">Mofificar artículo</button>
+                            </p>`;
+            div.innerHTML += `<p>
+                                <button style="margin-top: 15px;" class="boton">Eliminar artículo</button>
                             </p>`;
         }
     }
@@ -519,7 +542,7 @@ function crearCuerpoInfoVendedor(articulo) {
                         <h5><img src="fotos/usuarios/${articulo.foto_vendedor}" alt="Foto no disponible" width="200"></h5>
                         <p>Vendedor: <a href="buscar.html?v=${articulo.vendedor}">${articulo.vendedor}</a></p>
                     </article>`;
-    nombreVendedor = articulo.vendedor;
+    loginVendedor = articulo.vendedor;
 
     return div;
 }
@@ -582,7 +605,7 @@ function getPreguntasArticulo() {
     xhr.onload = function() {
         let preguntas = JSON.parse(xhr.responseText).FILAS,
             section   = $('#grupoPreguntas');
-        console.log(preguntas);
+        
         if (preguntas.length > 0) {
             botonesResponder = new Array();
 
@@ -625,10 +648,10 @@ function crearPreguntaArticulo(pregunta) {
 
     if (pregunta.respuesta != null) {
         div.innerHTML += `<div>
-                            <p class="icon-user">${nombreVendedor}</p>
+                            <p class="icon-user">${loginVendedor}</p>
                             <p>${pregunta.respuesta}</p>
                         </div>`;
-    } else if (usu != undefined  &&  usu.login == nombreVendedor) {
+    } else if (usu != undefined  &&  usu.login == loginVendedor) {
         let span = document.createElement('span'),
             boton = document.createElement('button');
     
@@ -709,10 +732,22 @@ function eventosPaginaArticulo() {
     });
 
     // Podemos seguir y dejar de seguir el artículo
-    let boton = $('#infoArticulo>div>p>button');
-    boton.onclick = function() {
-        let seguir = (boton.textContent == 'Seguir') ? true : false;
-        peticionSeguimientoArticulo(seguir);
+    let boton = $('#infoArticulo>div>p:nth-child(3)>button');
+    if (boton != undefined) {
+        boton.onclick = function() {
+            let seguir = (boton.textContent == 'Seguir') ? true : false;
+            peticionSeguimientoArticulo(seguir);
+        }
+    }
+
+    // Si el login es el vendedor podemos modificar y eliminar el artículo...
+    let botonModificar = $('#infoArticulo>div>p:nth-child(4)>button');
+    if (botonModificar != undefined) {
+        botonModificar.addEventListener('click', ventanaModificarArticulo);
+    }
+    let botonEliminar = $('#infoArticulo>div>p:nth-child(5)>button');
+    if (botonEliminar != undefined) {
+        botonEliminar.addEventListener('click', ventanaEliminarArticulo);
     }
 }
 
@@ -785,16 +820,151 @@ function peticionSeguimientoArticulo(seguir) {
         if (respuesta.RESULTADO == 'OK') {
             let parrafo    = $('#infoArticulo>div>article>p:nth-child(4)'),
                 seguidores = parseInt(parrafo.textContent),
-                boton      = $('#infoArticulo>div>p>button');
+                boton      = $('#infoArticulo>div>p:nth-child(3)>button');
 
             // Cambiamos mensaje del botón y número de seguidores...
-            boton.textContent = (seguir) ? 'Dejar de seguir' : 'Seguir';
+            boton.textContent = (seguir) ? 'Siguiendo' : 'Seguir';
             parrafo.textContent = ' ';
             parrafo.textContent += (seguir) ? (++seguidores) : (--seguidores);
 
             eventosPaginaArticulo();
         } else {
             console.log(respuesta.DESCRIPCION);
+        }
+    };
+    xhr.setRequestHeader('Authorization', autorizacion);
+    xhr.send();
+}
+
+
+
+// Función para modificar un artículo
+function ventanaModificarArticulo() {
+    let body         = $('body'),
+        div          = document.createElement('div'),
+        botonCerrar  = document.createElement('button'),
+        botonAceptar = document.createElement('button'),
+        article      = document.createElement('article');
+        
+    div.setAttribute('class', 'mensajeModal');
+    article.innerHTML = `<h2>MODIFICAR ARTÍCULO</h2>
+                        <form class="formResultado" onsubmit="return peticionModificarArticulo(this);">
+                            <p>
+                                <label for="precio">Precio:<label>
+                                <input min="0" value="${precioArticulo}" type="number" id="precio" name="precio">
+                            </p>
+                            <p>
+                                <label for="descripcion">Descripción:<label>
+                                <textarea id="descripcion" name="descripcion">${descripcionArticulo}</textarea>
+                            </p>
+                        </form>`;
+    botonCerrar.textContent = 'Cerrar';
+    botonCerrar.setAttribute('style', 'background-color: #f00');
+    botonAceptar.textContent = 'Aceptar';
+    botonAceptar.setAttribute('style', 'background-color: #0f0');
+
+    article.appendChild(botonCerrar);
+    article.appendChild(botonAceptar);
+    div.appendChild(article);
+
+    // Si el usuario pulsa un botón
+    botonCerrar.onclick = function() {
+        body.lastChild.remove();
+    };
+    botonAceptar.onclick = function() {
+        $('.mensajeModal form').onsubmit = peticionModificarArticulo($('.mensajeModal form'));
+    };
+
+    body.appendChild(div);
+}
+
+
+
+// Función para realizar la petición para modificar un artículo
+function peticionModificarArticulo(form) {
+    let xhr = new XMLHttpRequest(),
+        fd  = new FormData(form),
+        url = 'api/articulos/' + idArticulo,
+        usu = JSON.parse(sessionStorage.getItem('usuario')),
+        autorizacion = usu.login + ':' + usu.token;
+
+    xhr.open('POST', url, true);
+    xhr.onload = function() {
+        let respuesta = JSON.parse(xhr.responseText);
+        
+        if (respuesta.RESULTADO == 'OK') {
+            
+            // Actualizamos la página...
+            descripcionArticulo = fd.get('descripcion');
+            precioArticulo = fd.get('precio');
+            $('#infoArticulo>p').textContent = descripcionArticulo;
+            $('#infoArticulo>div>article>p:nth-child(2)').innerHTML = `<p><i class="fas fa-coins"></i> ${precioArticulo} €</p>`;
+
+            // Cerramos mensaje modal...
+            $('body').lastChild.remove();
+        } else {
+            console.error('No se ha podido modificar el artículo...');
+        }
+    };
+    xhr.setRequestHeader('Authorization', autorizacion);
+    xhr.send(fd);
+
+    return false;
+}
+
+
+
+// Función para eliminar un artículo
+function ventanaEliminarArticulo() {
+    let body         = $('body'),
+        div          = document.createElement('div'),
+        botonCerrar  = document.createElement('button'),
+        botonAceptar = document.createElement('button'),
+        article      = document.createElement('article');
+        
+    div.setAttribute('class', 'mensajeModal');
+    article.innerHTML = `<h2>MODIFICAR ARTÍCULO</h2>
+                        <p>¿Deseas eliminar este artículo que tienes a la venta?</p>`;
+    botonCerrar.textContent = 'Cerrar';
+    botonCerrar.setAttribute('style', 'background-color: #f00');
+    botonAceptar.textContent = 'Aceptar';
+    botonAceptar.setAttribute('style', 'background-color: #0f0');
+
+    article.appendChild(botonCerrar);
+    article.appendChild(botonAceptar);
+    div.appendChild(article);
+
+    // Si el usuario pulsa un botón
+    botonCerrar.onclick = function() {
+        body.lastChild.remove();
+    };
+    botonAceptar.onclick = function() {
+        peticionEliminarArticulo();
+    };
+
+    body.appendChild(div);
+}
+
+
+
+// Función para hacer una petición al servidor para eliminar artículos
+function peticionEliminarArticulo() {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/articulos/' + idArticulo,
+        usu = JSON.parse(sessionStorage.getItem('usuario')),
+        autorizacion = usu.login + ':' + usu.token;
+
+    xhr.open('DELETE', url, true);
+    xhr.onload = function() {
+        let respuesta = JSON.parse(xhr.responseText);
+        
+        if (respuesta.RESULTADO == 'OK') {
+
+            // Cerramos mensaje modal y redirigimos a index
+            $('body').lastChild.remove();
+            location.href = 'index.html';
+        } else {
+            console.error('No se ha podido ELIMINAR el artículo...');
         }
     };
     xhr.setRequestHeader('Authorization', autorizacion);
