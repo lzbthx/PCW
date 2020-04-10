@@ -1,3 +1,6 @@
+// ========================================================================================
+// Página login.html
+// ========================================================================================
 function hacerLogin(frm){
 	let xhr = new XMLHttpRequest(),
 		url = 'api/usuarios/login',
@@ -25,52 +28,16 @@ function hacerLogin(frm){
 	return false;
 }
 
-/*
-function comprobar(){
-	var comprueba;
-
-	console.log("¿Estamos logueados?");
-
-	if(window.sessionStorage){
-		if(sessionStorage["login"] != null){
-			if (page == 'login.html'  ||  page == 'registro.html') {
-				getAbsolutePath();
-				location.href = './index.html';
-				comprueba = true;
-            }
-		}else{
-			console.log("No estás logueado. Por favor, inicie sesión.");
-			mostrarMensajeError();
-			comprueba = false;
-		}
-	}
-
-	return comprueba;
-}
-
-
-function getAbsolutePath() {
-    var loc = window.location;
-	var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
-
-	console.log(pathName);
-
-    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
-}*/
-
 function mostrarMensaje(datos){
-    let titulo, texto, div, html;
-
-    titulo = 'LOGIN';
-    texto = 'El usuario <b>' + datos.login + '</b> se ha logueado de forma correcta';
+    let div, html;
 
     div = document.createElement('div');
     
     div.setAttribute('id', 'capa-fondo');
 	
     html = '<article>';
-    html += '<h2>' + titulo + '</h2>';
-    html += '<p>' + texto + '</p>';
+    html += '<h2>LOGIN</h2>';
+    html += '<p>El usuario <b>' + datos.login + '</b> se ha logueado de forma correcta</p>';
     html += '<button onclick="cerrar();">Aceptar</button>';
     html += '</article>';
 
@@ -80,18 +47,15 @@ function mostrarMensaje(datos){
 }
 
 function mostrarMensajeError() {
-	let titulo, texto, div, html;
-
-    titulo = 'Acceso denegado';
-	texto = 'Se ha producido un error al intentar iniciar sesión. Por favor, vuelve a intentarlo.';
+	let div, html;
 
     div = document.createElement('div');
     
 	div.id = 'capa-fondo';
 	
     html = '<article>';
-    html += '<h2>' + titulo + '</h2>';
-    html += '<p>' + texto + '</p>';
+    html += '<h2>Acceso denegado</h2>';
+    html += '<p>Se ha producido un error al intentar iniciar sesión. Por favor, vuelve a intentarlo.</p>';
     html += '<button onclick="cerrarError();">Aceptar</button>';
     html += '</article>';
 
@@ -111,6 +75,9 @@ function cerrarError(){
 	document.getElementById('login').focus();
 }
 
+// ========================================================================================
+// Página registro.html
+// ========================================================================================
 function hacerRegistro(frm){
 	let url = 'api/usuarios/registro',
 		fd  = new FormData(frm);
@@ -204,4 +171,189 @@ function compruebaPassword(){
 function logout(){
 	console.log("Vamos a cerrar sesión.");
 	sessionStorage.clear();
+}
+
+// ========================================================================================
+// Página nuevo.html
+// ========================================================================================
+function pedirCategorias(){
+    let xhr = new XMLHttpRequest(),
+		url = 'api/categorias',
+		option = '';
+
+	xhr.open('GET', url, true);
+	
+    xhr.onerror = function(){
+        console.log('ERROR');
+    }
+
+    xhr.onload = function(){
+        let r = JSON.parse(xhr.responseText);
+        console.log(r);
+		
+		document.querySelector('#categoria').innerHTML = '';
+        r.FILAS.forEach(function(e){
+            option = document.createElement('option');
+			option.innerHTML = `${e.nombre}`;
+			document.querySelector('#categoria').appendChild(option);
+		});
+    };
+    
+    xhr.send();
+}
+
+var imagenes = [], cont = 0;
+
+function cargarFoto(inp){
+	if(inp != null){
+		if(parseInt(inp.files[0].size/1024) > 300){
+			console.log("Imagen muy grande");
+			mensajeFoto();
+			return false;
+		}
+	}
+	
+	let fr = new FileReader();
+
+	fr.onload = function(){
+		inp.parentNode.querySelector('img').src = fr.result;
+	}
+	fr.readAsDataURL(inp.files[0]);
+
+	if(imagenes[cont] == null || imagenes[cont] == ''){
+		imagenes[cont] = inp.files[0];
+	}
+
+	cont++;
+}
+
+var counting = 0;
+
+function añadirFoto(){
+	let div = document.querySelector('form>div'),
+		ficha = document.createElement('div'),
+		html = '';
+
+	counting++;
+
+	html += `<label for="file-input${counting}">`;
+	html += `<img src="Images/no-image.png" alt='' class="no-photo">`;
+	html += '</label>';
+	html += `<input type="file" name="fichero" id="file-input${counting}" onchange="cargarFoto(this);" accept="image/*" class="file-input">`;
+	html += '<button onclick="limpiar();" class="subir-label"><i class="fas fa-trash-alt"></i> Eliminar foto</button>';
+
+	ficha.innerHTML = html;
+	div.appendChild(ficha);
+	let input = "file-input"+counting;
+	document.getElementById(input).click();
+}
+
+function limpiar(value){
+	console.log(value);
+	console.log(value.parentNode.querySelector('img'));
+	value.parentNode.querySelector('img').src = 'Images/no-image.png';
+}
+
+var id, login, token;
+function enviarArticulo(frm){
+	let url = 'api/articulos/',
+		xhr = new XMLHttpRequest(),
+		fd  = new FormData(frm),
+		usu = JSON.parse(sessionStorage['usuario']),
+		autorizacion = `${usu.login}:${usu.token}`;
+
+	console.log(usu.login + ', ' + usu.token);
+
+	console.log(imagenes);
+
+	xhr.open('POST', url, true);
+	xhr.onload = function(){
+		console.log(xhr.responseText);
+        let r = JSON.parse(xhr.responseText);
+		if(r.RESULTADO == 'OK'){
+			console.log('r: ', r);
+			id = r.ID, login = usu.login, token = usu.token;
+			subirFoto();
+		}
+		else
+			console.log(r.CODIGO + ': ' + r.DESCRIPCION);
+	};
+
+	xhr.setRequestHeader('Authorization', autorizacion);
+	xhr.send(fd);
+
+	return false;
+}
+
+var x = 0;
+function subirFoto(){
+	let url = `api/articulos/${id}/foto`
+		xhr = new XMLHttpRequest(),
+		auth = `${login}:${token}`,
+		fd = new FormData(),
+		encontrado = false;
+
+	console.log(imagenes);
+
+	fd.append('fichero', imagenes[x]);
+
+	xhr.open('POST', url, true);
+	xhr.addEventListener("load", function() {
+		let r = JSON.parse(xhr.responseText);
+		
+		if(r.RESULTADO=='OK'){
+			console.log(r);
+			x++;
+			if(x < imagenes.length){
+				subirFoto();
+			}
+
+			if(x == imagenes.length){
+				mensajeArticulo();
+			}
+		}
+		else{
+			console.log(r.CODIGO + ': ' + r.DESCRIPCION);
+		}
+	});
+
+	xhr.setRequestHeader('Authorization', auth);
+	xhr.send(fd);
+    
+}
+
+function mensajeArticulo(){
+    let div, html;
+
+    div = document.createElement('div');
+    div.setAttribute('id', 'capa-fondo');
+
+    html = '<article>';
+    html += '<h2>Nuevo artículo</h2>';
+    html += '<p>Se ha guardado correctamente el artículo</p>';
+    html += '<button onclick="cerrar();">Aceptar</button>';
+    html += '</article>';
+
+    div.innerHTML = html;
+    document.body.appendChild(div);
+}
+
+function mensajeFoto(){
+	let div, html;
+
+    div = document.createElement('div');
+    div.setAttribute('id', 'capa-fondo');
+
+    html = '<article>';
+    html += '<h2>Error al subir la imagen</h2>';
+    html += '<p>El tamaño de la imagen no puede superar los 300KB</p>';
+    html += '<button onclick="cerrarFoto();">Aceptar</button>';
+    html += '</article>';
+
+    div.innerHTML = html;
+    document.body.appendChild(div);
+}
+
+function cerrarFoto(){
+    document.querySelector('#capa-fondo').remove();
 }

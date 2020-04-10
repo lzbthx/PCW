@@ -80,7 +80,7 @@ body>main>section>section#registrar>div{
 
 form[name="log"]>input:hover, form[name="registro"]>input:hover, form[name="nuevo"]>input:hover{
     transition: all .3s;
-    color: white;
+    color: black;
     box-shadow: inset 0 0 0 50px rgb(255, 211, 173);
 }
 
@@ -199,6 +199,11 @@ body>main>section>section#article>div>form{
         display: inline-block;
     }
 
+        label[for="subir"]{
+            text-align: center !important;
+            margin: 0 auto;
+        }
+
     section#article>div>form>input[type="text"],
     section#article>div>form>input[type="number"]{
         width: 100%;
@@ -222,39 +227,40 @@ body>main>section>section#article>div>form{
         width: 100%;
     }
 
-    body>main>section>section#article>div>form>div{
+    .archive{
         font-size: x-large;
         display: flex;
         flex-direction: column;
         padding: 20px;
     }
 
-    #file-input {
+    .file-input {
         display: none;
     }
 
-    body>main>section>section#article>div>form>div>button,
-    #subir-label{
+    /*body>main>section>section#article>div>form>div>button,*/
+    .subir-label{
         cursor: pointer;
         padding: 5px;
         font-size: 1em;
-        font-weight: 700;
+        font-weight: 600;
         color: white;
         background-color: #1d1c1c;
         display: inline-block;
-        margin: 10px;
+        border: solid 2px #1d1c1c;
+        margin: 0.5em;
     }
 
-    label[for="file-input"]{
-        width: 200px;
-        height: 200px;
+    .archive{
+        width: 50%;
+        /*height: 200px;*/
         margin: auto;
     }
 
         body>main>section>section#article>div>form>div>button:hover,
-        #subir-label:hover{
+        .subir-label:hover{
             background:#058dac;
-            color:#fff
+            color:#fff;
         }
 
         section#article>div>form>input:focus{

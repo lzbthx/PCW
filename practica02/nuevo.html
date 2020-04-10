@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/fontello.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="js/jsAlex.js"></script>
+    <script src="js/jsEli.js"></script>
 </head>
 <body>
     <header id="cabecera">
@@ -28,7 +29,7 @@
                 <li><a href="nuevo.html"><span class ="icon-plus"></span><span>Nuevo artículo</span></a></li>
                 <li><a href="login.html"><span class = "icon-user"></span><span>Entrar</span></a></li>
                 <li><a href="registro.html"><span class = "icon-user-plus"></span><span>Registro</span></a></li>
-                <li><a href="index.html"><span class ="icon-logout"></span><span>Salir</span></a></li>
+                <li onclick="logout()"><a href="index.html"><span class ="icon-logout"></span><span>Salir</span></a></li>
             </ul>
         </nav>
     </header>
@@ -38,7 +39,7 @@
             <section id="article">
                 <h4>Nuevo artículo</h4>
                 <div id="nuevo-form">
-                    <form name="nuevo">
+                    <form name="nuevo" onsubmit="return enviarArticulo(this);">
                         <label for="nombre">Nombre del artículo: </label>
                         <input type="text" name="nombre" id="nombre" maxlength="100" placeholder="Nombre del artículo, máx. 100 caracteres" required autofocus><br>
     
@@ -49,30 +50,29 @@
                         <input type="number" name="precio" id="precio" min="0" step="0.01" required placeholder="00.00">
                     
                         <label for="cat">Categoría: </label>
-                        <input type="text" list="lista_cat" name="cat" id="cat" required maxlength="100">
-                        <datalist id="lista_cat">
-                            <option value="Moda y Accesorios">
+                        <input type="text" list="categoria" name="categoria" id="cat" required maxlength="100" onfocus="pedirCategorias();">
+                        <datalist id="categoria">
+                            <!--<option value="Moda y Accesorios">
                             <option value="TV, Audio y Foto">
                             <option value="Informática y Electrónica">
                             <option value="Cine, Libros y Música">
                             <option value="Consolas y Videojuegos">
-                            <option value="Deporte y Ocio">
+                            <option value="Deporte y Ocio">-->
                         </datalist>
-                        
-                        <label>Foto del artículo:</label>
-                        <div>
-                            <input type="file" name="foto" id="file-input" required class="inputfile">
-                            <label for="file-input">
-                                <img src="Images/no-image.png" alt="Foto no disponible" class="no-photo">
-                            </label><br>
-
-                            <label for="subir" id="subir-label">Seleccionar foto</label>
-                            <input type="file" name="subir" id="subir" required class="subir" />
-                            <button type="reset">Eliminar foto</button>
+                        <br>
+                        <h3>Foto del artículo:</h3>
+                        <div class="archive">
+                            <div>
+                                <label for="file-input">
+                                    <img src="Images/no-image.png" alt='' class="no-photo">
+                                </label>
+                                <input type="file" name="fichero" id="file-input" onchange="cargarFoto(this);" accept="image/*" class="file-input">
+                                <label onclick="limpiar(this);" class="subir-label"><i class="fas fa-trash-alt"></i> Eliminar foto</label>
+                            </div>
                         </div>
-                        <div>
-                            <input type="submit" value="Publicar" id="subir-label">
-                        </div>
+                        <button onclick="añadirFoto();" class="subir-label">Añadir foto</button>
+                        <!--<label for="subir" id="subir-label" onclick="añadirFoto();">Añadir foto</label><br>-->
+                        <input type="submit" value="Publicar" class="subir-label">
                     </form>
                 </div>
             </section>
