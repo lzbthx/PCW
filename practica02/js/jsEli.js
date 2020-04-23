@@ -205,6 +205,7 @@ function pedirCategorias(){
 var imagenes = [], cont = 0;
 
 function cargarFoto(inp){
+
 	if(inp != null){
 		if(parseInt(inp.files[0].size/1024) > 300){
 			console.log("Imagen muy grande");
@@ -237,10 +238,10 @@ function añadirFoto(){
 	counting++;
 
 	html += `<label for="file-input${counting}">`;
-	html += `<img src="Images/no-image.png" alt='' class="no-photo">`;
+	html += `<img id="default" src="Images/no-image.png" alt='' class="no-photo">`;
 	html += '</label>';
-	html += `<input type="file" name="fichero" id="file-input${counting}" onchange="cargarFoto(this);" accept="image/*" class="file-input">`;
-	html += '<button onclick="limpiar(this);" class="subir-label"><i class="fas fa-trash-alt"></i> Eliminar foto</button>';
+	html += `<input type="file" name="fichero" id="file-input${counting}" onchange="cargarFoto(this);" accept="image/*" required class="file-input">`;
+	html += '<button onclick="limpiar();" class="subir-label"><i class="fas fa-trash-alt"></i> Eliminar foto</button>';
 
 	ficha.innerHTML = html;
 	div.appendChild(ficha);
@@ -250,7 +251,6 @@ function añadirFoto(){
 
 function limpiar(value){
 	console.log(value);
-	console.log(value.parentNode.querySelector('img'));
 	value.parentNode.querySelector('img').src = 'Images/no-image.png';
 }
 
