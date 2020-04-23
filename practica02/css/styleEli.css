@@ -6,6 +6,17 @@ main>section>h3 {
     font-family: 'Bebas Neue', cursive;
 }
 
+/* CSS para Articulo */
+
+#dejarPregunta>p{
+    background-color: #fff;
+    padding: 7px;
+    border: 2px solid #058dac;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
 /* CSS para Login */
 body>main>section>section#entrar>div{
     width: 380px;
@@ -98,7 +109,7 @@ form[name="log"]>input:hover, form[name="registro"]>input:hover, form[name="nuev
     background-color: rgba(255,255,255,.8);
 }
 
-    #capa-fondo > article{
+    #capa-fondo > article, .capa-fondo > article{
         background-color: #fff;
         border: 2px solid #000;
         text-align: center;
