@@ -357,3 +357,67 @@ function mensajeFoto(){
 function cerrarFoto(){
     document.querySelector('#capa-fondo').remove();
 }
+
+function dejarPregunta(){
+	let section = document.getElementById("dejarPregunta"), section2 = '', html = '';
+
+	if(!sessionStorage.getItem('usuario')){
+		section.parentNode.removeChild(section);
+
+		section2 = document.createElement("section");
+		section2.setAttribute('id', 'dejarPregunta');
+		html += '<h5>¡Atención!</h5>';
+		html += '<p>Debes hacer login para poder dejar una pregunta al vendedor.</p>';
+		html += '<button class="boton" onclick="window.location.href=\'login.html\';">Aceptar</button>';
+
+		section2.innerHTML = html;
+		let h4 = document.getElementById('preguntas').getElementsByTagName('h4')[1];
+		
+		document.getElementById('preguntas').insertBefore(section2, h4);
+	}
+}
+
+function dejarPreguntaLogueado(){
+
+	if(sessionStorage.getItem('usuario')){
+		let url = 'formulario.html';
+
+		fetch(url).then(function(respuesta){
+			if(!respuesta.ok)
+				return false;
+				respuesta.text().then(function(html){
+
+				document.querySelector('#dejarPregunta').innerHTML=html;
+			})
+		});
+    	return false;
+	}
+}
+
+function guardarPregunta(frm){
+	const rutaNavegador = window.location.search;
+    const urlParams = new URLSearchParams(rutaNavegador);
+    const id = urlParams.get('id');
+
+	//let id = location.search.substring(1),
+		let url = `api/articulos/${id}/pregunta`,
+    	fd = new FormData(frm),
+    	usu = JSON.parse(sessionStorage['usuario']),
+		auth = `${usu.login}:${usu.token}`;
+		
+		fetch(url, {method:'POST',body:fd,headers:{'Authorization':usu.login + ':' + usu.token}}).then(function(respuesta){
+			console.log(respuesta);
+			if(respuesta.ok){
+				respuesta.json().then(function(datos){
+					console.log(datos);
+					console.log("HOLAAAAAAAAAAAAAAAAAAAA");
+					document.querySelector('#dejarPregunta>form').reset();
+					document.querySelector('#dejarPregunta>form').focus();
+				});
+			}
+			else    
+				console.log('Error en la petición fetch de hacer pregunta');
+		});
+	return false;
+}
+
