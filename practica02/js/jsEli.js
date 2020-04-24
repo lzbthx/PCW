@@ -378,21 +378,22 @@ function dejarPregunta(){
 }
 
 function dejarPreguntaLogueado(){
-
 	if(sessionStorage.getItem('usuario')){
 		let url = 'formulario.html';
 
 		fetch(url).then(function(respuesta){
 			if(!respuesta.ok)
 				return false;
-				respuesta.text().then(function(html){
-
-				document.querySelector('#dejarPregunta').innerHTML=html;
+			
+			respuesta.text().then(function(html){
+				document.querySelector('#dejarPregunta').innerHTML = html;
 			})
 		});
     	return false;
 	}
 }
+
+var textareaForm = '';
 
 function guardarPregunta(frm){
 	const rutaNavegador = window.location.search;
@@ -400,24 +401,50 @@ function guardarPregunta(frm){
     const id = urlParams.get('id');
 
 	//let id = location.search.substring(1),
-		let url = `api/articulos/${id}/pregunta`,
-    	fd = new FormData(frm),
-    	usu = JSON.parse(sessionStorage['usuario']),
-		auth = `${usu.login}:${usu.token}`;
-		
-		fetch(url, {method:'POST',body:fd,headers:{'Authorization':usu.login + ':' + usu.token}}).then(function(respuesta){
-			console.log(respuesta);
-			if(respuesta.ok){
-				respuesta.json().then(function(datos){
-					console.log(datos);
-					console.log("HOLAAAAAAAAAAAAAAAAAAAA");
-					document.querySelector('#dejarPregunta>form').reset();
-					document.querySelector('#dejarPregunta>form').focus();
-				});
-			}
-			else    
-				console.log('Error en la petición fetch de hacer pregunta');
-		});
+	let url = `api/articulos/${id}/pregunta`,
+	fd = new FormData(frm),
+	usu = JSON.parse(sessionStorage['usuario']);
+	
+	console.log(frm[0].value);
+	textareaForm = frm[0].value;
+
+	fetch(url, {method:'POST',body:fd,headers:{'Authorization':usu.login + ':' + usu.token}}).then(function(respuesta){
+		console.log(respuesta);
+		if(respuesta.ok){
+			respuesta.json().then(function(datos){
+				console.log(datos);
+				console.log("HOLAAAAAAAAAAAAAAAAAAAA");
+				mensajePregunta(true);
+				document.querySelector('#dejarPregunta>form').reset();
+				location.reload(true);
+			});
+		}
+		else{
+			console.log('Error en la petición fetch de hacer pregunta');
+			mensajePregunta(false);
+			document.querySelector('#dejarPregunta>form>textarea').focus();
+		}    
+	});
 	return false;
 }
 
+function mensajePregunta(value){
+	let div, html;
+
+    div = document.createElement('div');
+    div.setAttribute('id', 'capa-fondo');
+
+	html = '<article>';
+	if(value == true){
+		html += '<h2>Mensaje enviado con éxito</h2>';
+		html += `<p>Pregunta: ${textareaForm}</p>`;
+	}else{
+		html += '<h2>¡ERROR! </h2>';
+		html += `<p>La pregunta: ${textareaForm} no se ha podido enviar con éxito. </p>`;
+	}
+    html += '<button onclick="cerrarFoto();">Aceptar</button>';
+    html += '</article>';
+
+    div.innerHTML = html;
+    document.body.appendChild(div);
+}
