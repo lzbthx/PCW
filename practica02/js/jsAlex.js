@@ -176,7 +176,6 @@ function peticionPaginaArticulos() {
     xhr.onload = function() {
         fotos = JSON.parse(xhr.responseText);
         borrarHijos('#articulos>div:nth-child(2)');
-
         if (fotos.FILAS.length > 0) {
 
             // Actualizamos paginación...
@@ -250,6 +249,10 @@ function crearFoto(foto) {
     p3.setAttribute('class', 'icon-user');
     p3.textContent = ' ' + foto.nsiguiendo;
     div.appendChild(p3);
+
+    let p4 = document.createElement('p');
+    p4.innerHTML = `<i class="far fa-calendar-alt"></i> ${getFormatoFecha(foto.fecha, 1)}`;
+    div.appendChild(p4);
 
     articleFoto.appendChild(div);
     parrafo3.textContent = foto.descripcion;
@@ -635,7 +638,7 @@ function getPreguntasArticulo() {
 // Función para crear una pregunta en la zona de preguntas de una artículo
 function crearPreguntaArticulo(pregunta) {
     let div = document.createElement('div'),
-        fecha = getFormatoFecha(pregunta.fecha_hora),
+        fecha = getFormatoFecha(pregunta.fecha_hora, 2),
         usu = undefined;
 
     div.setAttribute('id', 'pregunta' + pregunta.id);
@@ -668,7 +671,7 @@ function crearPreguntaArticulo(pregunta) {
 
 
 // Función para obtener la hora
-function getFormatoFecha(objFecha) {
+function getFormatoFecha(objFecha, tipo) {
     let devuelve  = '',
         fechaHora = objFecha.split(' '),
         fecha     = fechaHora[0].split('-'),
@@ -713,8 +716,13 @@ function getFormatoFecha(objFecha) {
             mes = 'diciembre';
             break;
     }
-    devuelve = fecha[2] + '-' + mes + '-' + fecha[0];
-    devuelve += ', a las ' + hora.substring(0, 5);
+
+    if (tipo == 1) {
+        devuelve = fecha[2] + '-' + mes.substring(0,3) + '-' + fecha[0];
+    } else {
+        devuelve = fecha[2] + '-' + mes + '-' + fecha[0];
+        devuelve += ', a las ' + hora.substring(0, 5);
+    }
 
     return devuelve;
 }
