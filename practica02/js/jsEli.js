@@ -171,6 +171,7 @@ function compruebaPassword(){
 function logout(){
 	console.log("Vamos a cerrar sesión.");
 	sessionStorage.clear();
+	location.href = 'index.html';
 }
 
 // ========================================================================================
