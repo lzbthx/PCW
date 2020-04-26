@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Oswald', sans-serif;
+    background: #f3dec3;
+}
+
+body > header{
+    width: 100%;
+    background:#f09c1e; 
+    top: 0%;
+    left: 0%;
+    z-index: 100;
+}
+
+body > header > div > h1{
+    color: #ffffff;
+    text-align: center;
+}
+
+body > header > div{
+    margin: auto; 
+    display: table;  
+    padding: 1em;
+}
+body > header > div > label {
+    float: right;
+    top: 0%;
+    border: none;
+    cursor: pointer;
+    margin-top: 13px;
+}
+
+body > header > div > img{
+   margin: 1em;
+}
+
+.logo{
+    height: 150px;
+    width: 150px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 50%;
+    background-size: 100% auto;
+}
+
+body > header > div > p{
+    color: #ffffff;
+    text-align: center;
+}
+
+body > main > section > h2{
+    text-align: center;
+}
+body > footer {
+    background: #f09c1e;
+}
+
+body > footer > a > img{
+    width: 30px;
+    height: 30px;
+}
+
+body > footer > p {
+    text-align: center;
+    color: #ffffff;
+    font-size: larger;
+}
+
+/* -------------- A C E R C A --------------*/
+body>main{
+    margin: 50px;
+}
+    main>section>section#acerca>div#flex {
+        display: flex;
+        justify-content: space-around;
+        margin: 15px;
+    }
+
+        main>section>h2{
+            text-align: center;
+            font-size: 2.4em;
+        }
+
+        section#acerca>h3 {
+            text-align: center;
+            font-size: 2em;
+            padding: 10px;
+        }
+
+        section#acerca>article, #acerca>div>div>article {
+            text-align: center;
+            font-size: 20px;
+        }
