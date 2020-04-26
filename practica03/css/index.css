@@ -19,26 +19,15 @@ body > header{
     z-index: 100;
 }
 
-body > header > div > h1{
+body > header > h1{
     color: #ffffff;
     text-align: center;
 }
 
-body > header > div{
+body > header{
     margin: auto; 
     display: table;  
     padding: 1em;
-}
-body > header > div > label {
-    float: right;
-    top: 0%;
-    border: none;
-    cursor: pointer;
-    margin-top: 13px;
-}
-
-body > header > div > img{
-   margin: 1em;
 }
 
 .logo{
@@ -48,11 +37,15 @@ body > header > div > img{
     background-position: 50%;
     border-radius: 50%;
     background-size: 100% auto;
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
 }
 
-body > header > div > p{
+body > header > p{
     color: #ffffff;
     text-align: center;
+    margin: 10px;
 }
 
 body > main > section > h2{
