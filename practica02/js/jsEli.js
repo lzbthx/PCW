@@ -368,8 +368,8 @@ function dejarPregunta(){
 		section2 = document.createElement("section");
 		section2.setAttribute('id', 'dejarPregunta');
 		html += '<h5>¡Atención!</h5>';
-		html += '<p>Debes hacer login para poder dejar una pregunta al vendedor.</p>';
-		html += '<button class="boton" onclick="window.location.href=\'login.html\';">Aceptar</button>';
+		html += '<p>Debes hacer <a href="login.html">login</a> para poder dejar una pregunta al vendedor.</p>';
+		//html += '<button class="boton" onclick="window.location.href=\'login.html\';">Aceptar</button>';
 
 		section2.innerHTML = html;
 		let h4 = document.getElementById('preguntas').getElementsByTagName('h4')[1];
@@ -417,7 +417,7 @@ function guardarPregunta(frm){
 				console.log("HOLAAAAAAAAAAAAAAAAAAAA");
 				mensajePregunta(true);
 				document.querySelector('#dejarPregunta>form').reset();
-				location.reload(true);
+				//location.reload(true);
 			});
 		}
 		else{
@@ -439,6 +439,8 @@ function mensajePregunta(value){
 	if(value == true){
 		html += '<h2>Mensaje enviado con éxito</h2>';
 		html += `<p>Pregunta: ${textareaForm}</p>`;
+		borrarHijos('#grupoPreguntas');
+		getPreguntasArticulo();
 	}else{
 		html += '<h2>¡ERROR! </h2>';
 		html += `<p>La pregunta: ${textareaForm} no se ha podido enviar con éxito. </p>`;
