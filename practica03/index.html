@@ -8,7 +8,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <script src="js/sodoku.js"></script>
+    <script src="js/sudoku.js"></script>
     <title>Sudoku - Game</title>
 </head>
 <body>
@@ -21,13 +21,17 @@
     <main>
         <section id="canvas">
             <h2>Panel del juego</h2>
-            <h3 id="puntua">Puntos: </h3>
-            <canvas id="cv01" width="360" height="360"></canvas>
+            <h3>Tamaño del juego</h3>
+            <input type="radio" name="size" value="4"> 4
+            <input type="radio" name="ize" value="9"> 9
+            <br><button type="button" id="inicio">Jugar</button>
+            <!--<h3 id="puntua">Puntos: </h3>
+            <canvas id="cv01" width="480" height="360"></canvas>-->
         </section>
     </main>
     <footer>
         <p><strong><a href="acerca.html">Acerca</a></strong></p>
-        <p>Práctica 3</p>
+        <p>&copy;PCW 2020- Práctica 3</p>
     </footer>
 </body>
 </html>
