@@ -53,7 +53,7 @@ body > main > section{
     text-align: center;
 }
 
-body > main > section > h3, form{
+body > main > section > h3, input{
     font-size: 1.6em;
 }
 
@@ -79,7 +79,7 @@ button#inicio{
     text-decoration:none;
     transition: all 0.2s;
     font-size: xx-large;
-    margin: 1.6em;
+    margin: 2em;
 }
 
     button#inicio:hover{
@@ -113,7 +113,7 @@ body>main{
 
         main>section>h2{
             text-align: center;
-            font-size: 2.4em;
+            font-size: 2.6em;
         }
 
         section#acerca>h3 {
