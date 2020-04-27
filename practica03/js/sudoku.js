@@ -25,7 +25,7 @@ function iniciar(){
     document.getElementById('canvas').innerHTML = html;
 
     if(checkbox == 4){
-        prepararCanvas(360,360);
+        prepararCanvas(480,360);
     }else{
         prepararCanvas(640, 480);
     }
