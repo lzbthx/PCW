@@ -72,21 +72,29 @@ body > footer > p {
     font-size: larger;
 }
 
-button#inicio{
+button{
     padding:0.35em 1.2em;
     border:0.1em solid #FFFFFF;
     border-radius:0.12em;
     text-decoration:none;
     transition: all 0.2s;
     font-size: xx-large;
-    margin: 1.6em;
+    margin: 1.2em;
 }
 
-    button#inicio:hover{
+    button:hover{
         color:#000000;
         background-color:#f3dec3;
     }
 
+/* ------------- C R O N O M E T R O --------------- */
+div.crono{
+    padding: 1em;
+}
+output{
+    font-size: XX-LARGE;
+    margin: 10px;
+}
 /* ------------- C A N V A S --------------- */
 
 #cv01 {

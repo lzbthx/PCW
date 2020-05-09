@@ -27,6 +27,7 @@ CREATE DATABASE IF NOT EXISTS `sudoku` DEFAULT CHARACTER SET utf8 COLLATE utf8_g
 USE `sudoku`;
 
 GRANT ALL PRIVILEGES ON sudoku.* to 'pcw'@127.0.0.1 identified by 'pcw';
+GRANT ALL PRIVILEGES ON sudoku.* to 'pcw'@localhost identified by 'pcw';
 -- --------------------------------------------------------
 
 --
