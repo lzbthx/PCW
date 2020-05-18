@@ -1,27 +1,14 @@
 //VARIABLES GLOBALES
 var checkbox, ctx,
     posX, posY,
-    puntos, id, token, 
-    sudokuPequeño = new Array(4),
-    sudokuGrande = new Array(9),
-    filas = [], columnas = [], cuadritos = [];
-
-//Inicializamos ambas matrices
-for(let x = 0; x < 4; x++){
-    sudokuPequeño[x] = new Array(4);
-}
-
-for(let y = 0; y < 4; y++){
-    sudokuGrande[y] = new Array(9);
-}
+    puntos, id, token;
 
 window.onload = function() {
-    console.log(sudokuPequeño);
-    console.log(sudokuGrande);
     
     if(document.getElementById('inicio')){
         document.getElementById('inicio').addEventListener("click", iniciar);
     }
+    
 };
 
 function prepararCanvas(x, y){
@@ -44,7 +31,7 @@ function iniciar(){
     html += '<output id="crono-si">00:00:00</output>';
     html += '</div>';
     html += '<button type="button" onclick="comprueba()">Comprobar</button>';
-    html += '<button type="button" onclick="pararSI()">Finalizar</button>';
+    html += '<button type="button" onclick="peticionFinalizarPartida()">Finalizar</button>';
     html += '<canvas id="cv01"></canvas>';
     html += '<div id="numeros"></div>';
     document.getElementById('canvas').innerHTML = html;
@@ -82,8 +69,7 @@ function generarSudoku(tam){
                 console.log(datos);
                 sessionStorage['sudoku'] = JSON.stringify(datos);
                 console.log(datos.TOKEN);
-                //arraySudoku();
-                pintarCasillas(tam);
+                pintaSudoku(tam);
                 id = datos.ID;
 			});
 		}else
@@ -109,13 +95,9 @@ function actualizarSI(){
     document.querySelector('#crono-si').setAttribute('data-valor', valor);
 }
 
-function pararSI(){
-    let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp');
-    peticionFinalizarPartida(idTemp);
-}
-
-function peticionFinalizarPartida(idTemp){
-    let xhr = new XMLHttpRequest(),
+function peticionFinalizarPartida(){
+    let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp'),
+        xhr = new XMLHttpRequest(),
         url = 'api/sudoku/' + id,
         sudo = JSON.parse(sessionStorage['sudoku']),
         autorizacion = sudo.TOKEN;
@@ -125,8 +107,10 @@ function peticionFinalizarPartida(idTemp){
         let respuesta = JSON.parse(xhr.responseText);
         console.log(respuesta);
         if (respuesta.RESULTADO == 'OK') {
+            //Para el temporizador
             clearInterval(idTemp);
             console.log("Se ha eliminado la partida. ");
+            limpiar();
         } else {
             console.error('No se ha podido ELIMINAR la partida...');
         }
@@ -169,15 +153,11 @@ function rejilla(value){
     for (let x=0; x < cv.width; x=x+ancho){
         ctx.moveTo(x,0);
         ctx.lineTo(x,cv.width);
-        if(value != 2 && value != 3)
-            columnas.push(x);
     }
     
     for (let y=0; y < cv.height; y=y+alto){
         ctx.moveTo(0,y);
         ctx.lineTo(cv.height,y);
-        if(value != 2 && value != 3)
-        filas.push(y);
     }
 
     //Dibuja las líneas horizontales y verticales centrales
@@ -193,7 +173,8 @@ function rejilla(value){
     ctx.stroke();
 }
 
-function pintarCasillas(regiones){
+
+function pintaSudoku(regiones){
     let cv = document.querySelector('canvas'),
         ctx = cv.getContext('2d'),
         ancho = cv.width / regiones,
@@ -245,23 +226,24 @@ function escribirNumeros(num){
             ctx.stroke();
         }
     }
-    
+
     casillasDeNumeros();
 }
 
+//Función que despliega los números a insertar en las casillas mediante botones
 function casillasDeNumeros(){
     let sudo = JSON.parse(sessionStorage['sudoku']),
         cv = document.querySelector('canvas'),
-        ctx = cv.getContext('2d'), x, y,
+        ctx = cv.getContext('2d'), x, y, evtX, evtY,
         tablero = sudo.SUDOKU, html = '';
 
+    /*
     cv.onmousemove = function(evt){
         console.log("Click " + evt.offsetX + '-' + evt.offsetY);
-        x = Math.floor(evt.offsetX/(cv.width/sudo.SUDOKU.length)),
-        y = Math.floor(evt.offsetY/(cv.height/sudo.SUDOKU.length));
 
         cv.style.cursor = "pointer";
     }
+    */
 
     cv.onclick = function(evt){
         console.log("Click " + evt.offsetX + '-' + evt.offsetY);
@@ -271,29 +253,29 @@ function casillasDeNumeros(){
         console.log(y + " - " + x);
 
         if(tablero[y][x] == 0){
-            
+            html = '<h3>Números disponibles</h3>';
             if(sudo.SUDOKU.length == 4){
-                html = `<button onclick="comprobarCoordenada(${y}, ${x}, 1)">1</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 2)">2</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 3)">3</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 4)">4</button>`;
+                for(let i = 1; i < 5; i++){
+                    if(i == 1)
+                        html += `<button onclick="pintarCasilla(${y}, ${x}, 1)">1</button>`;
+                    else
+                        html += `<button onclick="pintarCasilla(${y}, ${x}, ${i})">${i}</button>`;
+                }
             }else{
-                html = `<button onclick="comprobarCoordenada(${y}, ${x}, 1)">1</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 2)">2</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 3)">3</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 4)">4</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 5)">5</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 6)">6</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 7)">7</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 8)">8</button>`;
-                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 9)">9</button>`;
+                for(let i = 1; i < 10; i++){
+                    if(i == 1)
+                        html += `<button onclick="pintarCasilla(${y}, ${x}, 1)">1</button>`;
+                    else
+                        html += `<button onclick="pintarCasilla(${y}, ${x}, ${i})">${i}</button>`;
+                }
             }
             document.querySelector('div#numeros').innerHTML = html;
         }
     }
 }
 
-function comprobarCoordenada(coorX, coorY, num){
+//Función que pinta aquella casilla del canvas del nuevo número que inserta el usuario
+function pintarCasilla(coorX, coorY, num){
     console.log("Número: "+num);
     console.log("CoorX: "+coorX);
     console.log("CoorY: "+coorY);
@@ -304,7 +286,7 @@ function comprobarCoordenada(coorX, coorY, num){
         ancho = cv.width / sudo.SUDOKU.length,
         alto = cv.height / sudo.SUDOKU.length;
 
-    ctx.fillStyle = '#b2b6b7';
+    ctx.fillStyle = '#cfd8dc';
     ctx.fillRect(ancho * coorY + 1, alto * coorX + 1, ancho-2, alto-2);
     ctx.beginPath();
     ctx.fillStyle = '#ff8300';
@@ -313,14 +295,11 @@ function comprobarCoordenada(coorX, coorY, num){
     ctx.fillText(num, coorY * ancho+(ancho/2), coorX * alto+(alto/1.6));
     ctx.stroke();
 
+    //Para volver a poner la rejilla central
     if(sudo.SUDOKU.length == 4)
         rejilla(2);
     else    
         rejilla(3);
-}
-
-function borraDiv(){
-
 }
 
 //BOTÓN PARA COMPROBAR ERRORES
@@ -330,12 +309,18 @@ function comprueba(juego){
 
     url = `api/sudoku/${sudo.ID}/comprobar`;
     header = sudo.TOKEN;
-    fd = null;
+    fd = juego;
 
     fetch(url, {method:'POST', headers:{'Authorization':header}, body:fd}).then(function(respuesta){
 		if(respuesta.ok){
 			respuesta.json().then(function(datos){
                 console.log(datos);
+                if(datos.FALLOS == 0 || datos.FALLOS == null || datos.FALLOS == undefined){
+                    ventanaModal('¡¡¡ENHORABUENA!!!', 
+                                 'Has completado el sudoku correctamente en... ');
+                }else{
+                    ventanaModal('¡ATENCIÓN!', `Hay ${datos.FALLOS.length} errores. ¿Quieres intentar corregirlos?`);
+                }
 			});
 		}else
 			console.log('Error en la petición fetch');
@@ -344,12 +329,48 @@ function comprueba(juego){
 	return false;
 }
 
-//Cuando le demos al boton de reset
+function ventanaModal(asunto, body){
+    let div, html;
+
+    div = document.createElement('div');
+    div.id = 'capa-fondo';
+	
+    html = '<article>';
+    html += `<h2>${asunto}</h2>`;
+    html += `<p>${body}</p>`;
+    if(asunto != '¡ATENCIÓN!'){
+        html += '<button onclick="cerrar(true);">Aceptar</button>';
+    }else{
+        html += 'button onclick="cerrar(true);">SÍ</button>';
+        html += 'button onclick="cerrar(false);">NO</button>';
+    }
+    html += '</article>';
+
+    div.innerHTML = html;
+
+    document.body.appendChild(div);
+}
+
+function cerrar(value){
+    if(value == true){
+        document.querySelector('#capa-fondo').remove();
+    }else{
+        let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp');
+
+        clearInterval(idTemp);
+        document.querySelector('#capa-fondo').remove();
+        limpiar();
+    }
+}
+
 function limpiar(){
     let cv = document.querySelector('#cv01'),
     ctx = cv.getContext('2d');
-
+    
     ctx.fillStyle = '#fff';
     ctx.fillRect(0,0,cv.width,cv.height);
+
+    sessionStorage.clear();
+    location.href = './index.html';
 }
 

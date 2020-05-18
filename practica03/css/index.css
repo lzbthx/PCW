@@ -79,7 +79,7 @@ button{
     text-decoration:none;
     transition: all 0.2s;
     font-size: xx-large;
-    margin: 1.2em;
+    margin: 0.4em;
 }
 
     button:hover{
@@ -95,6 +95,7 @@ output{
     font-size: XX-LARGE;
     margin: 10px;
 }
+
 /* ------------- C A N V A S --------------- */
 
 #cv01 {
@@ -114,6 +115,54 @@ div#numeros > img{
     height: 50px;
     margin: 2px;
 }
+
+/* ------------- V E N T A N A ------------- */
+/* --------------- M O D A L --------------- */
+#capa-fondo{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    background-color: rgba(255,255,255,.8);
+}
+
+    #capa-fondo > article, .capa-fondo > article{
+        background-color: #fff;
+        border: 2px solid #000;
+        text-align: center;
+        width: 20em;
+        position: absolute;
+        top: 15em;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+        #capa-fondo > article > h2{
+            background-color: #dfeaff;
+            margin: 0;
+            padding: .5em;
+        }
+
+            #capa-fondo>article>p{
+                padding: 5%;
+            }
+
+                #capa-fondo > article > button{
+                    margin: .5em;
+                    font-size:1em;
+                    background-color: #ccc;
+                    /*padding: .5em 2em;*/
+                    cursor: pointer;
+
+                    padding: 5px;
+                    font-weight: 700;
+                    color: white;
+                    background-color: #1d1c1c;
+                    display: inline-block;
+                    margin: 10px;
+                }
 
 /* -------------- A C E R C A -------------- */
 body>main{
