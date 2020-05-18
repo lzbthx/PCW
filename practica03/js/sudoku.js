@@ -46,6 +46,7 @@ function iniciar(){
     html += '<button type="button" onclick="comprueba()">Comprobar</button>';
     html += '<button type="button" onclick="pararSI()">Finalizar</button>';
     html += '<canvas id="cv01"></canvas>';
+    html += '<div id="numeros"></div>';
     document.getElementById('canvas').innerHTML = html;
 
     if(checkbox == 4){
@@ -110,11 +111,10 @@ function actualizarSI(){
 
 function pararSI(){
     let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp');
-    clearInterval(idTemp);
     peticionFinalizarPartida(idTemp);
 }
 
-function peticionFinalizarPartida(){
+function peticionFinalizarPartida(idTemp){
     let xhr = new XMLHttpRequest(),
         url = 'api/sudoku/' + id,
         sudo = JSON.parse(sessionStorage['sudoku']),
@@ -125,8 +125,8 @@ function peticionFinalizarPartida(){
         let respuesta = JSON.parse(xhr.responseText);
         console.log(respuesta);
         if (respuesta.RESULTADO == 'OK') {
+            clearInterval(idTemp);
             console.log("Se ha eliminado la partida. ");
-            //location.href = 'index.html';
         } else {
             console.error('No se ha podido ELIMINAR la partida...');
         }
@@ -180,19 +180,6 @@ function rejilla(value){
         filas.push(y);
     }
 
-    if(value != 2 && value != 3){
-        columnas.push(0);
-        filas.push(0);
-    }
-    
-    for (x = 0; x < columnas.length; x++) {
-        for (y = 0; y < filas.length; y++) {
-            cuadritos.push([columnas[x], filas[y], 0, 0]);
-        }
-    }
-
-    console.log(cuadritos);
-
     //Dibuja las líneas horizontales y verticales centrales
     for(let i = 0; i < regiones; i++){
         //Verticales
@@ -204,9 +191,6 @@ function rejilla(value){
     }
 
     ctx.stroke();
-
-    console.log(filas);
-    console.log(columnas);
 }
 
 function pintarCasillas(regiones){
@@ -261,21 +245,82 @@ function escribirNumeros(num){
             ctx.stroke();
         }
     }
+    
+    casillasDeNumeros();
 }
 
-function numeros(){
-    let div, html;
+function casillasDeNumeros(){
+    let sudo = JSON.parse(sessionStorage['sudoku']),
+        cv = document.querySelector('canvas'),
+        ctx = cv.getContext('2d'), x, y,
+        tablero = sudo.SUDOKU, html = '';
 
-    div = document.createElement('div');
-    div.id = 
+    cv.onmousemove = function(evt){
+        console.log("Click " + evt.offsetX + '-' + evt.offsetY);
+        x = Math.floor(evt.offsetX/(cv.width/sudo.SUDOKU.length)),
+        y = Math.floor(evt.offsetY/(cv.height/sudo.SUDOKU.length));
 
-    html = '<img src="images/num1>';
-    html += '<img src="images/num2>';
-    html += '<img src="images/num3>';
-    html += '<img src="images/num4>';
+        cv.style.cursor = "pointer";
+    }
 
-    div.innerHTML = html;
-    document.body.appendChild(div);
+    cv.onclick = function(evt){
+        console.log("Click " + evt.offsetX + '-' + evt.offsetY);
+        x = Math.floor(evt.offsetX/(cv.width/sudo.SUDOKU.length)),
+        y = Math.floor(evt.offsetY/(cv.height/sudo.SUDOKU.length));
+
+        console.log(y + " - " + x);
+
+        if(tablero[y][x] == 0){
+            
+            if(sudo.SUDOKU.length == 4){
+                html = `<button onclick="comprobarCoordenada(${y}, ${x}, 1)">1</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 2)">2</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 3)">3</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 4)">4</button>`;
+            }else{
+                html = `<button onclick="comprobarCoordenada(${y}, ${x}, 1)">1</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 2)">2</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 3)">3</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 4)">4</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 5)">5</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 6)">6</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 7)">7</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 8)">8</button>`;
+                html += `<button onclick="comprobarCoordenada(${y}, ${x}, 9)">9</button>`;
+            }
+            document.querySelector('div#numeros').innerHTML = html;
+        }
+    }
+}
+
+function comprobarCoordenada(coorX, coorY, num){
+    console.log("Número: "+num);
+    console.log("CoorX: "+coorX);
+    console.log("CoorY: "+coorY);
+
+    let cv = document.querySelector('canvas'),
+        ctx = cv.getContext('2d'),
+        sudo = JSON.parse(sessionStorage['sudoku']),
+        ancho = cv.width / sudo.SUDOKU.length,
+        alto = cv.height / sudo.SUDOKU.length;
+
+    ctx.fillStyle = '#b2b6b7';
+    ctx.fillRect(ancho * coorY + 1, alto * coorX + 1, ancho-2, alto-2);
+    ctx.beginPath();
+    ctx.fillStyle = '#ff8300';
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 36px sans-serif, arial';
+    ctx.fillText(num, coorY * ancho+(ancho/2), coorX * alto+(alto/1.6));
+    ctx.stroke();
+
+    if(sudo.SUDOKU.length == 4)
+        rejilla(2);
+    else    
+        rejilla(3);
+}
+
+function borraDiv(){
+
 }
 
 //BOTÓN PARA COMPROBAR ERRORES
@@ -304,13 +349,6 @@ function limpiar(){
     let cv = document.querySelector('#cv01'),
     ctx = cv.getContext('2d');
 
-    //Limpiar el canvas
-    //ctx.clearRect(0,0,cv.width,cv.height);
-
-    //Otra forma de borrarlo
-    //cv.width = cv.width;
-
-    //Tercera forma de borrar
     ctx.fillStyle = '#fff';
     ctx.fillRect(0,0,cv.width,cv.height);
 }
