@@ -1,10 +1,22 @@
 //VARIABLES GLOBALES
 var checkbox, ctx,
     posX, posY,
-    puntos, id, token;
+    puntos, id, token,
+    sudokuPequeño = new Array(4), sudokuGrande = new Array(9);
+
+//Creamos ambas matrices para poder almacenar los números
+for(let x = 0; x < 4; x++){
+    sudokuPequeño[x] = new Array(4);
+}
+
+for(let y = 0; y < 9; y++){
+    sudokuGrande[y] = new Array(9);
+}
 
 window.onload = function() {
-    
+    console.log(sudokuPequeño);
+    console.log(sudokuGrande);
+
     if(document.getElementById('inicio')){
         document.getElementById('inicio').addEventListener("click", iniciar);
     }
@@ -222,10 +234,19 @@ function escribirNumeros(num){
             if(tablero[x][y] != 0){
                 ctx.fillStyle = '#FF8300';
                 ctx.fillText(tablero[x][y], y * ancho+(ancho/2), x * alto+(alto/1.6));
+                
+                if(num == 4){
+                    sudokuPequeño[x][y] = tablero[x][y];
+                }else{
+                    sudokuGrande[x][y] = tablero[x][y];
+                }
             }
             ctx.stroke();
         }
     }
+
+    console.log(sudokuPequeño);
+    console.log(sudokuGrande);
 
     casillasDeNumeros();
 }
@@ -295,6 +316,15 @@ function pintarCasilla(coorX, coorY, num){
     ctx.fillText(num, coorY * ancho+(ancho/2), coorX * alto+(alto/1.6));
     ctx.stroke();
 
+    //Nos guardamos el nuevo número en la matriz global 
+    if(sudo.SUDOKU.length == 4){
+        sudokuPequeño[coorX][coorY] = num;
+        console.log(sudokuPequeño);
+    }else{
+        sudokuGrande[coorX][coorY] = num;
+        console.log(sudokuGrande);
+    }
+    
     //Para volver a poner la rejilla central
     if(sudo.SUDOKU.length == 4)
         rejilla(2);
@@ -303,21 +333,30 @@ function pintarCasilla(coorX, coorY, num){
 }
 
 //BOTÓN PARA COMPROBAR ERRORES
-function comprueba(juego){
+function comprueba(){
     let sudo = JSON.parse(sessionStorage['sudoku']),
         url, header;
 
     url = `api/sudoku/${sudo.ID}/comprobar`;
     header = sudo.TOKEN;
-    fd = juego;
+    fd = new FormData;
 
-    fetch(url, {method:'POST', headers:{'Authorization':header}, body:fd}).then(function(respuesta){
+    if(sudo.SUDOKU.length == 4){
+        juego = JSON.stringify(sudokuPequeño);
+    }else{
+        juego = JSON.stringify(sudokuGrande);
+    }
+
+    fd.append('juego', juego);
+
+    fetch(url, {method:'POST', body:fd, headers:{'Authorization':header}}).then(function(respuesta){
 		if(respuesta.ok){
 			respuesta.json().then(function(datos){
                 console.log(datos);
                 if(datos.FALLOS == 0 || datos.FALLOS == null || datos.FALLOS == undefined){
-                    ventanaModal('¡¡¡ENHORABUENA!!!', 
-                                 'Has completado el sudoku correctamente en... ');
+                    /*ventanaModal('¡¡¡ENHORABUENA!!!', 
+                                 'Has completado el sudoku correctamente en... ');*/
+                    console.log("No hay fallos en el juego.");
                 }else{
                     ventanaModal('¡ATENCIÓN!', `Hay ${datos.FALLOS.length} errores. ¿Quieres intentar corregirlos?`);
                 }
@@ -341,8 +380,8 @@ function ventanaModal(asunto, body){
     if(asunto != '¡ATENCIÓN!'){
         html += '<button onclick="cerrar(true);">Aceptar</button>';
     }else{
-        html += 'button onclick="cerrar(true);">SÍ</button>';
-        html += 'button onclick="cerrar(false);">NO</button>';
+        html += '<button onclick="cerrar(true);">SÍ</button>';
+        html += '<button onclick="cerrar(false);">NO</button>';
     }
     html += '</article>';
 
