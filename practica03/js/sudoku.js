@@ -2,26 +2,28 @@
 var checkbox, ctx,
     posX, posY,
     puntos, id, token,
-    sudokuPequeño = new Array(4), sudokuGrande = new Array(9);
+    sudokuPequenyo, sudokuGrande,
+    coord;
 
-//Creamos ambas matrices para poder almacenar los números
-for(let x = 0; x < 4; x++){
-    sudokuPequeño[x] = new Array(4);
-}
 
-for(let y = 0; y < 9; y++){
-    sudokuGrande[y] = new Array(9);
-}
-
+/*
 window.onload = function() {
-    console.log(sudokuPequeño);
+    console.log(sudokuPequenyo);
     console.log(sudokuGrande);
 
     if(document.getElementById('inicio')){
         document.getElementById('inicio').addEventListener("click", iniciar);
     }
     
-};
+};*/
+
+// Función que se ejecuta cuando se ha cargado todo el DOM de la página
+document.addEventListener('DOMContentLoaded', load, false);
+function load() {
+    document.getElementById('inicio').addEventListener("click", iniciar);
+}
+
+
 
 function prepararCanvas(x, y){
     let cv = document.querySelector('#cv01');
@@ -31,29 +33,47 @@ function prepararCanvas(x, y){
 }
 
 function iniciar(){
-    console.log('Empieza el juego.');
-
     let html = '',
         checkbox = document.querySelector('input[type="radio"]:checked').value;
+    console.log('Empieza el juego...');
 
     console.log(checkbox);
     html = '<h2>Panel del juego</h2>';
+    if (checkbox == '4') {
+        html += `<form>
+                <input type="radio" id="tam1" name="size" value="4" disabled checked><label for="tam1"> 4</label>
+                <input type="radio" id="tam2" name="size" value="9" disabled><label for="tam2"> 9</label>
+            </form>`;
+    } else {
+        html += `<form>
+                <input type="radio" id="tam1" name="size" value="4" disabled><label for="tam1"> 4</label>
+                <input type="radio" id="tam2" name="size" value="9" disabled checked><label for="tam2"> 9</label>
+            </form>`;
+    }
     html += '<h3 id="puntua">Puntos: </h3>';
     html += '<div class="crono">';
     html += '<output id="crono-si">00:00:00</output>';
     html += '</div>';
-    html += '<button type="button" onclick="comprueba()">Comprobar</button>';
+    html += '<button type="button" onclick="comprueba();">Comprobar</button>';
     html += '<button type="button" onclick="peticionFinalizarPartida()">Finalizar</button>';
     html += '<canvas id="cv01"></canvas>';
     html += '<div id="numeros"></div>';
     document.getElementById('canvas').innerHTML = html;
 
     if(checkbox == 4){
+        sudokuPequenyo = new Array(4);
+        for(let x = 0; x < 4; x++){
+            sudokuPequenyo[x] = new Array(4);
+        }
         prepararCanvas(480, 480);
         rejilla(4);
         //Llamamos otra vez para poner más gorda la linea central 
         //rejilla(2);
     }else{
+        sudokuGrande = new Array(9);
+        for(let x = 0; x < 9; x++){
+            sudokuGrande[x] = new Array(9);
+        }
         prepararCanvas(640, 640);
         rejilla(9);
         //rejilla(3);
@@ -67,6 +87,8 @@ function iniciar(){
     let idTemp = setInterval(actualizarSI, 1000); //Ejecutará la función cada segundo
     document.querySelector('#crono-si').setAttribute('data-id-temp', idTemp);
 }
+
+
 
 function generarSudoku(tam){
     let url = `api/sudoku/generar/`;
@@ -90,6 +112,8 @@ function generarSudoku(tam){
 
 	return false;
 }
+
+
 
 function actualizarSI(){
     //Tomar el nº de segundos que tengo acumulados en el query selector
@@ -131,9 +155,20 @@ function peticionFinalizarPartida(){
     xhr.send();
 }
 
+/*
 function verCasillas(regiones){
     let cv = document.querySelector('canvas');
 
+    // Mover el ratón por encima de las casillas...
+    cv.onmousemove = function(evt) {
+        let columna = Math.floor(evt.offsetX / ancho),
+            fila    = Math.floor(evt.offsetY / alto),
+            tablero = (checkbox == 4) ? sudokuPequenyo : sudokuGrande;
+
+        console.log('Move: ' + fila + ' - ' + columna);
+    }
+
+    // Click sobre una casilla del sudoku...
     cv.onclick = function(evt){
         console.log("Regiones: " + regiones);
         console.log('CLICK: ' + evt.offsetX + ' - ' + evt.offsetY);
@@ -144,10 +179,10 @@ function verCasillas(regiones){
         console.log(fila + ' - ' + columna);
     }
 }
-
+*/
 function rejilla(value){
     let cv = document.querySelector('canvas'),
-    ctx = cv.getContext('2d');
+    ctx = cv.getContext('2d'),
     regiones = value,
     ancho = cv.width / regiones,
     alto = cv.height / regiones;
@@ -161,6 +196,7 @@ function rejilla(value){
     ctx.beginPath();
     ctx.strokeStyle = '#727272';
 
+    
     //Dibuja la rejilla entera
     for (let x=0; x < cv.width; x=x+ancho){
         ctx.moveTo(x,0);
@@ -184,6 +220,8 @@ function rejilla(value){
 
     ctx.stroke();
 }
+
+
 
 
 function pintaSudoku(regiones){
@@ -236,7 +274,7 @@ function escribirNumeros(num){
                 ctx.fillText(tablero[x][y], y * ancho+(ancho/2), x * alto+(alto/1.6));
                 
                 if(num == 4){
-                    sudokuPequeño[x][y] = tablero[x][y];
+                    sudokuPequenyo[x][y] = tablero[x][y];
                 }else{
                     sudokuGrande[x][y] = tablero[x][y];
                 }
@@ -245,26 +283,42 @@ function escribirNumeros(num){
         }
     }
 
-    console.log(sudokuPequeño);
-    console.log(sudokuGrande);
-
-    casillasDeNumeros();
+    casillasDeNumeros(num);
 }
 
 //Función que despliega los números a insertar en las casillas mediante botones
-function casillasDeNumeros(){
+function casillasDeNumeros(regiones){
     let sudo = JSON.parse(sessionStorage['sudoku']),
         cv = document.querySelector('canvas'),
-        ctx = cv.getContext('2d'), x, y, evtX, evtY,
-        tablero = sudo.SUDOKU, html = '';
+        ctx = cv.getContext('2d'), x, y,
+        tablero = sudo.SUDOKU, html = '',
+        ancho = cv.width / regiones,
+        alto = cv.height / regiones;
 
-    /*
-    cv.onmousemove = function(evt){
-        console.log("Click " + evt.offsetX + '-' + evt.offsetY);
+    
+    // Mover el ratón por encima de las casillas...
+    cv.onmousemove = function(evt) {
+        let columna = Math.floor(evt.offsetX / ancho),
+            fila    = Math.floor(evt.offsetY / alto),
+            pinta   = false;
 
-        cv.style.cursor = "pointer";
+        if (checkbox == 4) {
+            if (sudokuPequenyo[fila][columna] == 0)
+                pinta = true;
+        } else {
+            if (sudokuGrande[fila][columna] == 0)
+                pinta = true;
+        }
+
+        if (pinta) {
+            ctx.beginPath();
+            ctx.fillStyle = '#f09c1e';
+            ctx.fillRect(ancho * columna + 1, alto * fila + 1, ancho-2, alto-2);
+            ctx.stroke();
+        }
+        
     }
-    */
+    
 
     cv.onclick = function(evt){
         console.log("Click " + evt.offsetX + '-' + evt.offsetY);
@@ -318,8 +372,8 @@ function pintarCasilla(coorX, coorY, num){
 
     //Nos guardamos el nuevo número en la matriz global 
     if(sudo.SUDOKU.length == 4){
-        sudokuPequeño[coorX][coorY] = num;
-        console.log(sudokuPequeño);
+        sudokuPequenyo[coorX][coorY] = num;
+        console.log(sudokuPequenyo);
     }else{
         sudokuGrande[coorX][coorY] = num;
         console.log(sudokuGrande);
@@ -342,7 +396,7 @@ function comprueba(){
     fd = new FormData;
 
     if(sudo.SUDOKU.length == 4){
-        juego = JSON.stringify(sudokuPequeño);
+        juego = JSON.stringify(sudokuPequenyo);
     }else{
         juego = JSON.stringify(sudokuGrande);
     }

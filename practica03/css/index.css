@@ -85,6 +85,7 @@ button{
     button:hover{
         color:#000000;
         background-color:#f3dec3;
+        cursor: pointer;
     }
 
 /* ------------- C R O N O M E T R O --------------- */
