@@ -3,7 +3,7 @@ var checkbox, ctx,
     posX, posY,
     puntos, id, token,
     sudokuPequenyo, sudokuGrande,
-    coord;
+    coord = new Array(3); // PosX, PosY, modificable 
 
 
 /*
@@ -269,15 +269,14 @@ function escribirNumeros(num){
     for(let x = 0; x < num; x++){
         for(let y = 0; y < num; y++){
             ctx.beginPath();
-            if(tablero[x][y] != 0){
+            if (tablero[x][y] != 0) {
                 ctx.fillStyle = '#FF8300';
                 ctx.fillText(tablero[x][y], y * ancho+(ancho/2), x * alto+(alto/1.6));
-                
-                if(num == 4){
-                    sudokuPequenyo[x][y] = tablero[x][y];
-                }else{
-                    sudokuGrande[x][y] = tablero[x][y];
-                }
+            }
+            if(num == 4){
+                sudokuPequenyo[x][y] = tablero[x][y];
+            }else{
+                sudokuGrande[x][y] = tablero[x][y];
             }
             ctx.stroke();
         }
@@ -300,26 +299,99 @@ function casillasDeNumeros(regiones){
     cv.onmousemove = function(evt) {
         let columna = Math.floor(evt.offsetX / ancho),
             fila    = Math.floor(evt.offsetY / alto),
-            pinta   = false;
+            pinta   = false, numero = 0;
 
-        if (checkbox == 4) {
-            if (sudokuPequenyo[fila][columna] == 0)
+        // Comprobamos si la posicion es modificable
+        if (regiones == 4) {
+            if (fila >= 0  &&  columna >=0  &&  fila < 4  &&  columna < 4  &&  tablero[fila][columna] == 0) {
                 pinta = true;
+
+                // Comprobamos si la posicion tenia un numero seleccionado
+                if (sudokuPequenyo[fila][columna] != 0)
+                    numero = sudokuPequenyo[fila][columna];
+            }
         } else {
-            if (sudokuGrande[fila][columna] == 0)
+            if (fila >= 0  &&  columna >=0  &&  fila < 9  &&  columna < 9  &&  tablero[fila][columna] == 0) {
                 pinta = true;
+
+                // Comprobamos si la posicion tenia un numero seleccionado
+                if (sudokuGrande[fila][columna] != 0)
+                    numero = sudokuGrande[fila][columna];
+            }
         }
 
+
+        // Pintamos la casilla
         if (pinta) {
             ctx.beginPath();
-            ctx.fillStyle = '#f09c1e';
+            ctx.fillStyle = '#fadfb7';
             ctx.fillRect(ancho * columna + 1, alto * fila + 1, ancho-2, alto-2);
             ctx.stroke();
+            cv.style.cursor = 'pointer';
+            if (numero != 0) {
+                ctx.beginPath();
+                ctx.fillStyle = '#FF8300';
+                ctx.fillText(numero, columna * ancho+(ancho/2), fila * alto+(alto/1.6));
+                ctx.stroke();
+            }
+        }
+
+        // Cambiamos el estilo de la anterior si es necesario
+        if (fila != coord[0]  ||  columna != coord[1]) {
+
+            // Si la casilla anterior era modificable o no estaba ocupada por un numero estático...
+            if (coord[2] == undefined  ||  coord[2] == false) {
+                ctx.beginPath();
+                cv.style.cursor = 'initial';
+                ctx.fillStyle = '#cfd8dc';
+                ctx.fillRect(ancho * coord[1] + 1, alto * coord[0] + 1, ancho-2, alto-2);
+                ctx.stroke();
+                /*
+                let numAnterior;
+                if (coord[0] != undefined  &&  coord[1] != undefined) {
+                    if (regiones == 4)
+                        numAnterior = sudokuPequenyo[coord[0]][coord[1]];
+                    else
+                        numAnterior = sudokuGrande[coord[0]][coord[1]];
+                    ctx.beginPath();
+                    ctx.fillStyle = '#FF8300';
+                    ctx.fillText(numAnterior, coord[1] * ancho+(ancho/2), coord[0] * alto+(alto/1.6));
+                    ctx.stroke();
+                }*/
+            }
+            coord[0] = fila;
+            coord[1] = columna;
+            coord[2] = (pinta) ? false : true;
         }
         
+        if(regiones == 4)
+            rejilla(2);
+        else    
+            rejilla(3);
+    }
+
+    
+    // Sacar el ratón fuera del canvas...
+    cv.onmouseout = function(evt) {
+        if (coord[2] == undefined  ||  coord[2] == false) {
+            ctx.beginPath();
+            cv.style.cursor = 'initial';
+            ctx.fillStyle = '#cfd8dc';
+            ctx.fillRect(ancho * coord[1] + 1, alto * coord[0] + 1, ancho-2, alto-2);
+            ctx.stroke();
+            if(regiones == 4)
+                rejilla(2);
+            else    
+                rejilla(3);
+        }
+        coord[0] = undefined;
+        coord[1] = undefined;
+        coord[2] = undefined;
     }
     
 
+
+    // Pulsar sobre una casilla
     cv.onclick = function(evt){
         console.log("Click " + evt.offsetX + '-' + evt.offsetY);
         x = Math.floor(evt.offsetX/(cv.width/sudo.SUDOKU.length)),
@@ -345,9 +417,12 @@ function casillasDeNumeros(regiones){
                 }
             }
             document.querySelector('div#numeros').innerHTML = html;
+        } else {
+            document.querySelector('div#numeros').innerHTML = '';
         }
     }
 }
+
 
 //Función que pinta aquella casilla del canvas del nuevo número que inserta el usuario
 function pintarCasilla(coorX, coorY, num){
@@ -384,6 +459,8 @@ function pintarCasilla(coorX, coorY, num){
         rejilla(2);
     else    
         rejilla(3);
+
+    document.querySelector('div#numeros').innerHTML = '';
 }
 
 //BOTÓN PARA COMPROBAR ERRORES
