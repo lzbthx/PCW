@@ -5,7 +5,8 @@ var checkbox, ctx,
     sudokuPequenyo, sudokuGrande,
     coordMove = new Array(3), // PosX, PosY, modificable
     coordClick = new Array(2),
-    pickMode = false;
+    pickMode = false,
+    coordFail = undefined;
 
 
 /*
@@ -56,7 +57,7 @@ function iniciar(){
     html += '<div class="crono">';
     html += '<output id="crono-si">00:00:00</output>';
     html += '</div>';
-    html += '<button type="button" onclick="comprueba();">Comprobar</button>';
+    html += '<button type="button" onclick="comprueba(false);">Comprobar</button>';
     html += '<button type="button" onclick="peticionFinalizarPartida()">Finalizar</button>';
     html += '<canvas id="cv01"></canvas>';
     html += '<div id="numeros"></div>';
@@ -299,6 +300,14 @@ function casillasDeNumeros(regiones){
     
     // Mover el ratón por encima de las casillas...
     cv.onmousemove = function(evt) {
+
+        // Cambiamos estilo de las casillas erroneas
+        if (coordFail != undefined) {
+            coordFail.forEach(function(casilla) {
+                pintarCasillaFallo(casilla.fila, casilla.columna, '#CFD8DC');
+            });
+            coordFail = undefined;
+        }
         
         let columna = Math.floor(evt.offsetX / ancho),
             fila    = Math.floor(evt.offsetY / alto),
@@ -433,6 +442,35 @@ function casillasDeNumeros(regiones){
 
         if(tablero[x][y] == 0){
 
+            // Ocultamos las casillas seleccionadas
+            if (coordClick[0] != undefined  &&  coordClick[1] != undefined) {
+                pintarCasillasAdyacentes(coordClick[0], coordClick[1], '#cfd8dc');
+
+            /*    ctx.beginPath();
+                ctx.fillStyle = '#cfd8dc';
+                ctx.fillRect(ancho * y + 1, alto * x + 1, ancho-2, alto-2);
+                ctx.stroke();
+                let num = (sudo.SUDOKU.length == 4) ? sudokuPequenyo[coordClick[0]][coordClick[1]] : sudokuGrande[coordClick[0]][coordClick[1]];
+                if (num != 0) {
+                    ctx.beginPath();
+                    ctx.fillStyle = '#FF8300';
+                    ctx.fillText(num, coordClick[1] * ancho+(ancho/2), coordClick[0] * alto+(alto/1.6));
+                    ctx.stroke();
+                }*/
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#727272';
+                for(let i = 0; i < sudo.SUDOKU.length; i++){
+                    //Verticales
+                    ctx.moveTo(i * ancho, 0);
+                    ctx.lineTo(i * ancho, cv.height);
+                    //Horizontales
+                    ctx.moveTo(0, i * alto);
+                    ctx.lineTo(cv.width, i * alto);
+                }
+                ctx.stroke();
+            }
+
             // Mostramos las casillas afectadas
             pintarCasillasAdyacentes(x, y, '#fadfb7');
 
@@ -441,9 +479,20 @@ function casillasDeNumeros(regiones){
             ctx.strokeStyle = '#a00';
             ctx.lineWidth = 4;
             ctx.rect(ancho * y + 1, alto * x + 1, ancho-2, alto-2);
-            ctx.fillStyle = '#FF8300';
+            ctx.fillStyle = '#ffa94d';
             ctx.fillRect(ancho * y + 1, alto * x + 1, ancho-2, alto-2);
             ctx.stroke();
+            let num;
+            if (sudo.SUDOKU.length == 4)
+                num = sudokuPequenyo[x][y];
+            else
+                num = sudokuGrande[x][y];
+            if (num != 0) {
+                ctx.beginPath();
+                ctx.fillStyle = '#FF8300';
+                ctx.fillText(num, y * ancho+(ancho/2), x * alto+(alto/1.6));
+                ctx.stroke();
+            }
 
             // Mostramos las opciones o numeros a elegir por el usuario
             html = '<h3>Números disponibles</h3>';
@@ -565,6 +614,8 @@ function pintarCasilla(coorX, coorY, num){
     // Devolvemos las casillas afectadas a su estilo original
     if (coordClick[0] != undefined  &&  coordClick[1] != undefined) {
         pintarCasillasAdyacentes(coordClick[0], coordClick[1], '#CFD8DC');
+        coordClick[0] = undefined;
+        coordClick[1] = undefined;
     }
 
 /*
@@ -574,30 +625,6 @@ function pintarCasilla(coorX, coorY, num){
         ctx.lineWidth = 2;
     }*/
 
-    
-    
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#727272';
-    for (let x=0; x < cv.width; x=x+ancho){
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,cv.width);
-    }
-    
-    for (let y=0; y < cv.height; y=y+alto){
-        ctx.moveTo(0,y);
-        ctx.lineTo(cv.height,y);
-    }
-    for(let i = 0; i < sudo.SUDOKU.length; i++){
-        //Verticales
-        ctx.moveTo(i * ancho, 0);
-        ctx.lineTo(i * ancho, cv.height);
-        //Horizontales
-        ctx.moveTo(0, i * alto);
-        ctx.lineTo(cv.width, i * alto);
-    }
-
-    ctx.stroke();
 
     // Pintamos la casilla con el numero insertado
     ctx.beginPath();
@@ -618,6 +645,29 @@ function pintarCasilla(coorX, coorY, num){
         sudokuGrande[coorX][coorY] = num;
         console.log(sudokuGrande);
     }
+
+
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#727272';
+    for (let x=0; x < cv.width; x=x+ancho){
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,cv.width);
+    }
+    
+    for (let y=0; y < cv.height; y=y+alto){
+        ctx.moveTo(0,y);
+        ctx.lineTo(cv.height,y);
+    }
+    for(let i = 0; i < sudo.SUDOKU.length; i++){
+        //Verticales
+        ctx.moveTo(i * ancho, 0);
+        ctx.lineTo(i * ancho, cv.height);
+        //Horizontales
+        ctx.moveTo(0, i * alto);
+        ctx.lineTo(cv.width, i * alto);
+    }
+    ctx.stroke();
     
     //Para volver a poner la rejilla central
     if(sudo.SUDOKU.length == 4)
@@ -627,10 +677,41 @@ function pintarCasilla(coorX, coorY, num){
 
     document.querySelector('div#numeros').innerHTML = '';
     pickMode = false;
+
+    // Comprobamos si se ha completado el tablero
+    tableroCompleto();
 }
 
+
+
+// Función para comprobar si se ha completado el tablero tras insertar un número
+function tableroCompleto() {
+    let cv = document.querySelector('canvas'),
+        ctx = cv.getContext('2d'),
+        sudo = JSON.parse(sessionStorage['sudoku']),
+        tablero, completado = true;
+
+    tablero = (sudo.SUDOKU.length == 4) ? sudokuPequenyo : sudokuGrande;
+
+    for (let i=0; i<tablero.length; i++) {
+        for (let j=0; j<tablero.length; j++) {
+            if (tablero[i][j] == 0) {
+                completado = false;
+                break;
+            }
+        }
+    }
+
+    // Mostramos los fallos y emergemos ventana modal
+    if (completado) {
+        comprueba(true);
+    }
+}
+
+
+
 //BOTÓN PARA COMPROBAR ERRORES
-function comprueba(){
+function comprueba(ventana){
     let sudo = JSON.parse(sessionStorage['sudoku']),
         url, header;
 
@@ -650,12 +731,26 @@ function comprueba(){
 		if(respuesta.ok){
 			respuesta.json().then(function(datos){
                 console.log(datos);
-                if(datos.FALLOS == 0 || datos.FALLOS == null || datos.FALLOS == undefined){
-                    /*ventanaModal('¡¡¡ENHORABUENA!!!', 
-                                 'Has completado el sudoku correctamente en... ');*/
+                if (datos.FALLOS == 0 || datos.FALLOS == null || datos.FALLOS == undefined) {
                     console.log("No hay fallos en el juego.");
-                }else{
-                    ventanaModal('¡ATENCIÓN!', `Hay ${datos.FALLOS.length} errores. ¿Quieres intentar corregirlos?`);
+
+                    // Detenemos el timer
+                    let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp'),
+                        valor  = document.querySelector('#crono-si').innerHTML;
+                    clearInterval(idTemp);
+                    ventanaModal('¡¡¡ENHORABUENA!!!', `Has competado el sudoku correctamente en ${valor}`);
+
+                } else {
+
+                    // Comprobar errores y mostrar ventana modal
+                    if (ventana) {
+                        ventanaModal('¡ATENCIÓN!', `Hay ${datos.FALLOS.length} errores. ¿Quieres intentar corregirlos?`);
+                    } else {
+                        coordFail = datos.FALLOS;
+                        coordFail.forEach(function(casilla) {
+                            pintarCasillaFallo(casilla.fila, casilla.columna, '#ff3333');
+                        });
+                    }
                 }
 			});
 		}else
@@ -664,6 +759,39 @@ function comprueba(){
 
 	return false;
 }
+
+
+
+
+// Función para mostrar el estilo de las casillas erróneas con un color
+function pintarCasillaFallo(x, y, color) {
+    let sudo = JSON.parse(sessionStorage['sudoku']),
+        cv = document.querySelector('canvas'),
+        ctx = cv.getContext('2d'),
+        ancho = cv.width / sudo.SUDOKU.length,
+        alto = cv.height / sudo.SUDOKU.length,
+        numero;
+
+    if (sudo.SUDOKU.length == 4)
+        numero = sudokuPequenyo[x][y];
+    else
+        numero = sudokuGrande[x][y];
+
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.fillRect(ancho * y + 1, alto * x + 1, ancho-2, alto-2);
+    ctx.stroke();
+    if (numero != 0) {
+        ctx.beginPath();
+        ctx.fillStyle = '#FF8300';
+        ctx.fillText(numero, y * ancho+(ancho/2), x * alto+(alto/1.6));
+        ctx.stroke();
+    }
+
+}
+
+
+
 
 function ventanaModal(asunto, body){
     let div, html;
