@@ -734,11 +734,13 @@ function comprueba(ventana){
                 if (datos.FALLOS == 0 || datos.FALLOS == null || datos.FALLOS == undefined) {
                     console.log("No hay fallos en el juego.");
 
-                    // Detenemos el timer
-                    let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp'),
-                        valor  = document.querySelector('#crono-si').innerHTML;
-                    clearInterval(idTemp);
-                    ventanaModal('¡¡¡ENHORABUENA!!!', `Has competado el sudoku correctamente en ${valor}`);
+                    // Detenemos el timer y mostramos la ventana modal de juego completado
+                    if (ventana) {
+                        let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp'),
+                            valor  = document.querySelector('#crono-si').innerHTML;
+                        clearInterval(idTemp);
+                        ventanaModal('¡¡¡ENHORABUENA!!!', `Has competado el sudoku correctamente en ${valor}`);
+                    }
 
                 } else {
 
@@ -803,7 +805,7 @@ function ventanaModal(asunto, body){
     html += `<h2>${asunto}</h2>`;
     html += `<p>${body}</p>`;
     if(asunto != '¡ATENCIÓN!'){
-        html += '<button onclick="cerrar(true);">Aceptar</button>';
+        html += '<button onclick="cerrarVentanaFinal();">Aceptar</button>';
     }else{
         html += '<button onclick="cerrar(true);">SÍ</button>';
         html += '<button onclick="cerrar(false);">NO</button>';
@@ -815,6 +817,9 @@ function ventanaModal(asunto, body){
     document.body.appendChild(div);
 }
 
+
+
+// Función para mostrar la ventana la ventana de comprobación de errores
 function cerrar(value){
     if(value == true){
         document.querySelector('#capa-fondo').remove();
@@ -827,14 +832,73 @@ function cerrar(value){
     }
 }
 
+
+
+// Función para cerrar la ventana de juego completado y resetear sudoku
+function cerrarVentanaFinal() {
+    let xhr = new XMLHttpRequest(),
+        url = 'api/sudoku/' + id,
+        sudo = JSON.parse(sessionStorage['sudoku']),
+        autorizacion = sudo.TOKEN;
+
+    xhr.open('DELETE', url, true);
+    xhr.onload = function() {
+        let respuesta = JSON.parse(xhr.responseText);
+        console.log(respuesta);
+        if (respuesta.RESULTADO == 'OK') {
+            console.log("Se ha eliminado la partida.");
+            document.querySelector('#capa-fondo').remove();
+            limpiar();
+        } else {
+            console.error('No se ha podido ELIMINAR la partida...');
+        }
+    };
+    xhr.setRequestHeader('Authorization', autorizacion);
+    xhr.send();
+    
+}
+
+
+
 function limpiar(){
     let cv = document.querySelector('#cv01'),
     ctx = cv.getContext('2d');
     
     ctx.fillStyle = '#fff';
     ctx.fillRect(0,0,cv.width,cv.height);
+    document.getElementById('cv01').remove();
 
     sessionStorage.clear();
-    location.href = './index.html';
+    //location.href = './index.html';
+    resetGlobal();
 }
 
+
+
+// Función para resetear el juego y valor de las variables globales
+function resetGlobal() {
+    checkbox = undefined;
+    ctx = undefined;
+    posX = undefined;
+    posY = undefined;
+    puntos = undefined;
+    id = undefined;
+    token = undefined;
+    sudokuPequenyo = undefined;
+    sudokuGrande = undefined;
+    coordMove = new Array(3);
+    coordClick = new Array(2);
+    pickMode = false;
+    coordFail = undefined;
+
+    document.getElementById('canvas').innerHTML = `<h2>Panel del juego</h2>
+    <h3>Tamaño del juego</h3>
+    <form>
+        <input type="radio" id="tam1" name="size" value="4" checked><label for="tam1"> 4</label>
+        <input type="radio" id="tam2" name="size" value="9"><label for="tam2"> 9</label>
+    </form>
+    <button type="button" id="inicio">Empezar</button>`;
+
+    // Volvemos a empezar el juego...
+    load();
+}
