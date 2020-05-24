@@ -23,15 +23,39 @@ window.onload = function() {
 // Función que se ejecuta cuando se ha cargado todo el DOM de la página
 document.addEventListener('DOMContentLoaded', load, false);
 function load() {
-    document.getElementById('inicio').addEventListener("click", iniciar);
-    /*document.querySelectorAll('input[type="radio"]').onchange = function(){
-        
-    };*/
 
+    prepararCanvas(480, 480);
+    rejilla(4);
+    rejilla(2);
+
+    document.getElementById('inicio').addEventListener("click", iniciar);
+    
+    let elementosDelForm = document.getElementsByTagName('input');
+
+    for(var i=0; i<elementosDelForm.length;i++) {
+        if (elementosDelForm[i].type == 'radio') {
+            elementosDelForm[i].addEventListener("click", cambiarCanvas);
+        }
+    }
+
+    /*
+    document.querySelectorAll('input[type="radio"]').onkeypress = function(){
+        let checkbox = document.querySelector('input[type="radio"]:checked').value;
+        if(checkbox == '4'){
+            prepararCanvas(480, 480);
+            rejilla(4);
+            rejilla(2);
+        }else{
+            prepararCanvas(640, 640);
+            rejilla(9);
+            rejilla(3);
+        }
+    };
+    */
     //document.querySelector('input[type="radio"]').addEventListener("change", cambiarCanvas);
 }
 
-/*
+
 function cambiarCanvas(){
     let checkbox = document.querySelector('input[type="radio"]:checked').value;
     if(checkbox == '4'){
@@ -43,7 +67,7 @@ function cambiarCanvas(){
         rejilla(9);
         rejilla(3);
     }
-}*/
+}
 
 
 function prepararCanvas(x, y){
@@ -915,7 +939,8 @@ function resetGlobal() {
         <input type="radio" id="tam1" name="size" value="4" checked><label for="tam1"> 4</label>
         <input type="radio" id="tam2" name="size" value="9"><label for="tam2"> 9</label>
     </form>
-    <button type="button" id="inicio">Empezar</button>`;
+    <button type="button" id="inicio">Empezar</button>
+    <canvas id="cv01" width="480" height="480"></canvas>`;
 
     // Volvemos a empezar el juego...
     load();
