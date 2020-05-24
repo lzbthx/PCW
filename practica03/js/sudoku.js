@@ -24,8 +24,26 @@ window.onload = function() {
 document.addEventListener('DOMContentLoaded', load, false);
 function load() {
     document.getElementById('inicio').addEventListener("click", iniciar);
+    /*document.querySelectorAll('input[type="radio"]').onchange = function(){
+        
+    };*/
+
+    //document.querySelector('input[type="radio"]').addEventListener("change", cambiarCanvas);
 }
 
+/*
+function cambiarCanvas(){
+    let checkbox = document.querySelector('input[type="radio"]:checked').value;
+    if(checkbox == '4'){
+        prepararCanvas(480, 480);
+        rejilla(4);
+        rejilla(2);
+    }else{
+        prepararCanvas(640, 640);
+        rejilla(9);
+        rejilla(3);
+    }
+}*/
 
 
 function prepararCanvas(x, y){
@@ -824,11 +842,11 @@ function cerrar(value){
     if(value == true){
         document.querySelector('#capa-fondo').remove();
     }else{
-        let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp');
-
-        clearInterval(idTemp);
+        //let idTemp = document.querySelector('#crono-si').getAttribute('data-id-temp');
+        //clearInterval(idTemp);
         document.querySelector('#capa-fondo').remove();
-        limpiar();
+        peticionFinalizarPartida();
+        //limpiar();
     }
 }
 
@@ -867,7 +885,7 @@ function limpiar(){
     ctx.fillStyle = '#fff';
     ctx.fillRect(0,0,cv.width,cv.height);
     document.getElementById('cv01').remove();
-
+    //peticionFinalizarPartida();
     sessionStorage.clear();
     //location.href = './index.html';
     resetGlobal();
